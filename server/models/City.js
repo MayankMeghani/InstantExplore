@@ -9,7 +9,15 @@ const citySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'State',
     required: [true, 'Please add a state'],
-  },
+  },  images: [{
+    type: String, 
+  }],
+  attractions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Attraction', 
+    }
+  ],
 });
 
 const City = mongoose.model('City', citySchema);

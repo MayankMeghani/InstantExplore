@@ -7,16 +7,20 @@ const attractionSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [false, 'Please add a description'],
+    required: [true, 'Please add a description'],
   },
-  photos: [{
+  images: [{
     type: String,
-    required: [false, 'Please add photos'],
+    required: [true, 'Please add photos'],
   }],
+  location: {
+    type: String,
+    required: [true, 'Please add location'],
+  },
   city: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'City',
-    required: [false, 'Please add a city'],
+    required: [true, 'Please add a city'],
   },
   categories: [{
     type: String,

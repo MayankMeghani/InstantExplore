@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { getCities, getCity, createCity, updateCity, deleteCity } from "../controllers/city.controller.js";
+import { getCities, getCity, createCity, updateCity, deleteCity,getCityAttractions } from "../controllers/city.controller.js";
 
 router.route("/")
   .get(getCities) 
@@ -11,4 +11,6 @@ router.route("/:id")
   .put(updateCity) 
   .delete(deleteCity); 
 
+  router.route("/:id/attractions")
+  .get(getCityAttractions);
 export default router;
