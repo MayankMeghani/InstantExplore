@@ -1,5 +1,8 @@
 # Node modules
-client/node_modules
+node_modules/
+
+# Ignore assets directories
+assets/
 
 # Logs
 logs/

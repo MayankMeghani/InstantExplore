@@ -1,21 +1,26 @@
-// src/Components/Header.js
+// src/Components/Header.jsx
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 import logo from '../assets/images/logo.png';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import Search from './Search'; // Import the Search component
 
-const Header = () => {
+const Header = ({ showSearch }) => { // Add showSearch as a prop
+  const location = useLocation();
+  const isTransparent = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signin';
+
   return (
-    <header className="header">
+    <header className={`header ${isTransparent ? 'transparent' : 'solid'}`}>
       <Link to="/" className="header-logo">
         <img src={logo} alt="InstantExplore Logo" className="logo-img" />
         InstantExplore
       </Link>
       <nav className="header-nav">
         <Link to="/">Home</Link>
-        <Link to="/login">Log-in</Link> {/* Link to Log-In page */}
-        <Link to="/signin">Sign-in</Link> {/* Link to Sign-In page */}
+        <Link to="/login">Log-in</Link>
+        <Link to="/signin">Sign-in</Link>
       </nav>
+      {showSearch && <Search />} {/* Conditionally render the Search component */}
       <button className="header-toggle">☰</button>
     </header>
   );
