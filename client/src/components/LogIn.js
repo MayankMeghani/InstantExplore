@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import styles from './Auth.module.css';
+import styles from './Styles/Auth.module.css';
 
 const LogIn = () => {
   return (
