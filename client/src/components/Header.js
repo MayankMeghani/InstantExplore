@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
-import logo from '../assets/images/logo.png';
 import Search from './Search'; // Import the Search component
 
 const Header = ({ showSearch }) => { // Add showSearch as a prop
