@@ -1,23 +1,18 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Styles/home.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import VideoSection from './components/VideoSection';
 
-function Home() {
-  const navigate = useNavigate();
 
-  const handleRedirect = () => {
-    navigate('/cities');
-  };
-
+const HomePage = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <button onClick={handleRedirect} className="redirect-button">
-          Go to Cities
-        </button>
-      </header>
+    <div>
+      <Header />
+      <VideoSection />
+      <Footer />
+      
     </div>
   );
-}
+};
 
-export default Home;
+export default HomePage;

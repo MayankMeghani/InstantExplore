@@ -1,0 +1,89 @@
+/* Ensure full height for body and remove default margin */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
+}
+
+.main-content {
+  flex: 1; /* Allow main content to grow and push footer to the bottom */
+}
+
+.footer {
+  background: #333; /* Dark background color */
+  color: #ddd; /* Light text color for better contrast */
+  padding: 15px 0; /* Reduced padding for a smaller height */
+  display: flex; /* Flexbox for layout */
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  width: 100%; /* Full width */
+  position: relative; /* Positioning context */
+  bottom: 0; /* Align at the bottom */
+  z-index: 1000; /* Ensure it stays on top of other content */
+}
+
+.footer-content {
+  max-width: 1200px; /* Maximum width of footer content */
+  width: 100%; /* Full width */
+  display: flex; /* Flexbox for layout */
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  text-align: center; /* Center text */
+}
+
+.footer-logo {
+  font-size: 1.75rem; /* Smaller font size for the logo */
+  font-weight: 700; /* Bold font weight */
+  color: #f76c6c; /* Logo color */
+  text-transform: uppercase; /* Uppercase text */
+  margin-bottom: 10px; /* Reduced space below the logo */
+  letter-spacing: 1px; /* Adjust letter spacing */
+}
+
+.footer-nav {
+  display: flex; /* Flexbox for horizontal layout */
+  margin-bottom: 10px; /* Reduced space below the navigation */
+}
+
+.footer-nav a {
+  color: #ddd; /* Light text color for links */
+  text-decoration: none; /* Remove underline from links */
+  margin: 0 10px; /* Reduced space between links */
+  font-size: 0.9rem; /* Smaller font size for links */
+  transition: color 0.3s; /* Smooth color transition on hover */
+}
+
+.footer-nav a:hover {
+  color: #f76c6c; /* Change color on hover */
+}
+
+.footer-bottom {
+  font-size: 0.75rem; /* Smaller font size for copyright text */
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border at the top */
+  padding-top: 5px; /* Reduced padding for spacing */
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+      padding: 10px; /* Reduced padding for small screens */
+  }
+  
+  .footer-nav {
+      flex-direction: column; /* Stack links vertically on small screens */
+      margin-bottom: 10px; /* Reduced space between items */
+  }
+
+  .footer-nav a {
+      margin: 5px 0; /* Space between links */
+  }
+}
