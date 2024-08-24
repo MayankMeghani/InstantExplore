@@ -104,6 +104,7 @@ const AttractionList = () => {
           title={attraction.name}
           description={attraction.description}
           Id={attraction._id}
+          rating={attraction.rating}
           images={attraction.images || ['default-image-url.jpg']} // Ensure `images` is an array
           onExploreClick={handleExploreClick}
           onUpdateClick={handleUpdateClick}

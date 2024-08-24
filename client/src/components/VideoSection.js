@@ -1,7 +1,6 @@
 // src/Components/VideoSection.js
 import React from 'react';
 import './Styles/VideoSection.css';
-import videoSrc from '../assets/videos/explore.mp4'; // Adjusted path
 import { useNavigate } from 'react-router-dom';
 
 const VideoSection = () => {
@@ -15,7 +14,7 @@ const VideoSection = () => {
   return (
     <div className="video-container">
       <video autoPlay muted loop className="background-video">
-        <source src={videoSrc} type="video/mp4" />
+        <source src={'https://firebasestorage.googleapis.com/v0/b/instantexplore.appspot.com/o/explore.mp4?alt=media&token=e105d156-c66a-4f8b-9ce4-8e2b19bc1403'} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div className="overlay-content">

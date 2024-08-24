@@ -20,6 +20,7 @@ const Attraction = ({ attraction }) => {
         const updatedReview = await updateReview(reviewToEdit._id, review);
         console.log('Review updated:', updatedReview);
       } else {
+        console.log(review);
         const newReview = await createReview(review);
         console.log('New review created:', newReview);
       }
@@ -115,9 +116,10 @@ const Attraction = ({ attraction }) => {
       {showReviewForm && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <div className="modal-header"></div>
+            <div className="modal-header">
+            <h3>{reviewToEdit === null ? 'Write a Review' : 'Edit Review'}</h3>
             <button className="close-button" onClick={handleClose}>&times;</button>
-           
+            </div>
             <div className="modal-body"></div>
         <ReviewForm
           attraction={attraction._id}

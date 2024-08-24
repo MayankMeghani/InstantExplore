@@ -22,11 +22,18 @@ const getReview = async(req, res) =>{
 
 const createReview = async (req, res) => {
     try{
+        console.log(req.body);
         const existingAttraction = await Attraction.findById(req.body.attraction);
         if(!existingAttraction) return res.status(400).json({ message: 'Invalid attraction ID' });
+        await existingAttraction.calculateAverageRating();
+        await existingAttraction.save();
+        
+
         const newReview = new Review (req.body);
         await newReview.save();
+
         existingAttraction.reviews.push(newReview._id);
+         await existingAttraction.calculateAverageRating();
         await existingAttraction.save(); 
         res.status(201).json(newReview); 
     }catch(error){
@@ -38,6 +45,9 @@ const updateReview = async(req, res) => {
     try{
         const review = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if(!review) return res.status(404).json({ message: 'Review not found' });
+        const attraction = await Attraction.findById(review.attraction);
+        await attraction.calculateAverageRating();
+        await attraction.save(); 
         res.status(200).json(review);
     }
     catch(error){
@@ -50,6 +60,8 @@ const removeReview = async(req, res)=>{
         const review = await Review.findByIdAndDelete(req.params.id);
         if(!review) return res.status(404).json({ message: 'Review not found' });
         const attraction = await Attraction.findByIdAndUpdate(review.attraction, { $pull: { reviews: req.params.id }});
+        await attraction.calculateAverageRating();
+        await attraction.save(); 
         res.status(204).json();
     }
     catch(error){

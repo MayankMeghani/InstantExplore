@@ -28,7 +28,6 @@ const ReviewForm = ({ attraction, initialReview, onSubmit }) => {
   return (
     <div className="review-form-overlay">
       <form className="review-form" onSubmit={handleSubmit}>
-        <h2>{initialReview ? 'Edit Review' : 'Write a Review'}</h2>
         <div className="rating-input">
           {[...Array(5)].map((_, i) => (
             <Star

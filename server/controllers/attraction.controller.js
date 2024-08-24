@@ -4,6 +4,10 @@ import City from "../models/City.js";
 const getAttractions = async (req, res) => {
     try {
         const attractions = await Attraction.find({});
+       for(const attraction in attractions){
+        await attraction.calculateAverageRating();
+        await attraction.save();
+       }
         res.status(200).json(attractions);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -12,17 +16,12 @@ const getAttractions = async (req, res) => {
 
 const getAttraction = async (req, res) => {
     try {
-        // const attraction = await Attraction.findById(req.params.id).populate({
-        //     path: 'reviews',
-        //     populate: {
-        //       path: 'user',
-        //       select: 'name', // Optionally select specific fields from the user
-        //     },
-        //   });
         const attraction = await Attraction.findById(req.params.id).populate({
             path: 'reviews',
           });
         if (!attraction) return res.status(404).json({ message: "Attraction not found" });
+        await attraction.calculateAverageRating();
+        await attraction.save();
         res.status(200).json(attraction);
     } catch (error) {
         res.status(404).json({ message: "Attraction not found" });
