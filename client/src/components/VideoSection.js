@@ -1,6 +1,6 @@
 // src/Components/VideoSection.js
 import React from 'react';
-import './VideoSection.css';
+import './Styles/VideoSection.css';
 import videoSrc from '../assets/videos/explore.mp4'; // Adjusted path
 import { useNavigate } from 'react-router-dom';
 
