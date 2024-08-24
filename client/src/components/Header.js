@@ -1,24 +1,18 @@
-// src/Components/Header.js
+// src/Components/Footer.js
 import React from 'react';
-import './Header.css';
-import logo from '../assets/images/logo.png';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import './Footer.css';
 
-const Header = () => {
+const Footer = () => {
   return (
-    <header className="header">
-      <Link to="/" className="header-logo">
-        <img src={logo} alt="InstantExplore Logo" className="logo-img" />
-        InstantExplore
-      </Link>
-      <nav className="header-nav">
-        <Link to="/">Home</Link>
-        <Link to="/login">Log-in</Link> {/* Link to Log-In page */}
-        <Link to="/signin">Sign-in</Link> {/* Link to Sign-In page */}
-      </nav>
-      <button className="header-toggle">☰</button>
-    </header>
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="footer-logo">InstantExplore</div>
+        <div className="footer-bottom">
+          &copy; {new Date().getFullYear()} MySite. All rights reserved.
+        </div>
+      </div>
+    </footer>
   );
 };
 
-export default Header;
+export default Footer;
