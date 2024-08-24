@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'; // Assuming you're passing the ID via URL params
-import Attraction from './Attraction';
+import Attraction from '../components/Attraction';
 import { getAttraction } from '../services/attractionService';
 
 const AttractionPage = () => {

@@ -1,43 +1,50 @@
 import React, { useState } from 'react';
-import { Star, Image } from 'lucide-react';
-import './Attraction.css';
-
-const ImageGrid = ({ images }) => {
-  const [showAll, setShowAll] = useState(false);
-
-  const displayedImages = showAll ? images : images.slice(0, 3);
-
-  return (
-    <div className="image-grid-container">
-      <div className={`image-grid ${showAll ? 'show-all' : ''}`}>
-        {displayedImages.map((image, index) => (
-          <div 
-            key={index} 
-            className={`image-item ${index === 0 && !showAll ? 'large' : 'small'}`}
-            style={{backgroundImage: `url(${image})`}}
-          >
-            {index === 2 && images.length > 3 && !showAll && (
-              <div className="more-images-overlay">
-                +{images.length - 2} more
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      {images.length > 3 && (
-        <button 
-          className="view-all-images-btn"
-          onClick={() => setShowAll(!showAll)}
-        >
-          <Image size={16} />
-          {showAll ? 'Show Less' : 'View All Images'}
-        </button>
-      )}
-    </div>
-  );
-};
+import { Star } from 'lucide-react';
+import './Styles/Attraction.css';
+import ReviewForm from '../Forms/ReviewForm.jsx';
+import { createReview, updateReview, deleteReview } from '../services/attractionService';
+import ImageGrid from './ImageGrid.jsx';
+import './Styles/Modal.css';
 
 const Attraction = ({ attraction }) => {
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewToEdit, setReviewToEdit] = useState(null);
+
+  const handleClose = () => {
+    setShowReviewForm(false); 
+  };
+
+  const handleSubmitReview = async (review) => {
+    try {
+      if (reviewToEdit) {
+        const updatedReview = await updateReview(reviewToEdit._id, review);
+        console.log('Review updated:', updatedReview);
+      } else {
+        const newReview = await createReview(review);
+        console.log('New review created:', newReview);
+      }
+      setShowReviewForm(false);
+      setReviewToEdit(null);
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    }
+  };
+
+  const handleModifyReview = (reviewId) => {
+    const reviewToModify = attraction.reviews.find(review => review._id === reviewId);
+    setReviewToEdit(reviewToModify);
+    setShowReviewForm(true);
+  };
+
+  const handleRemoveReview = async (reviewId) => {
+    try {
+      await deleteReview(reviewId);
+      console.log(`Review with ID: ${reviewId} removed`);
+    } catch (error) {
+      console.error('Error removing review:', error);
+    }
+  };
+
   return (
     <div className="attraction-container">
       <h1 className="attraction-name">{attraction.name}</h1>
@@ -65,8 +72,14 @@ const Attraction = ({ attraction }) => {
         </div>
       </div>
 
-      {/* <div className="attraction-reviews">
+      <div className="attraction-reviews">
         <h2>Reviews</h2>
+        <button className="write-review-btn" onClick={() => {
+          setReviewToEdit(null);
+          setShowReviewForm(true);
+        }}>
+          Write a Review
+        </button>
         {attraction.reviews.map((review, index) => (
           <div key={index} className="review">
             <div className="review-header">
@@ -83,9 +96,41 @@ const Attraction = ({ attraction }) => {
               </span>
             </div>
             <p className="review-text">{review.text}</p>
+            <button 
+              className="modify-review-btn" 
+              onClick={() => handleModifyReview(review._id)}
+            >
+              Modify
+            </button>
+            <button 
+              className="remove-review-btn" 
+              onClick={() => handleRemoveReview(review._id)}
+            >
+              Remove
+            </button>
           </div>
         ))}
-      </div> */}
+      </div>
+
+      {showReviewForm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header"></div>
+            <button className="close-button" onClick={handleClose}>&times;</button>
+           
+            <div className="modal-body"></div>
+        <ReviewForm
+          attraction={attraction._id}
+          initialReview={reviewToEdit}
+          onSubmit={handleSubmitReview}
+          // onClose={() => {
+          //   setShowReviewForm(false);
+          //   setReviewToEdit(null);
+          // }}
+        />
+         </div>
+          </div>
+      )}
     </div>
   );
 };

@@ -38,6 +38,10 @@ const attractionSchema = new mongoose.Schema({
     }),
     required: [false, 'Please add a schedule'],
   },
+  reviews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Review',
+  }],
 });
 
 const Attraction = mongoose.model('Attraction', attractionSchema);

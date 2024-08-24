@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getCities, createCity, deleteCity, updateCity, getCity } from '../services/cityServices';
-import Card from './Card';
-import './CityList.css';
-import Button from './addButton';
-import CityForm from './CityForm';
-import './Modal.css';
+import Card from '../components/Card';
+import './Styles/CityList.css';
+import Button from '../components/addButton';
+import CityForm from '../Forms/CityForm';
+import './Styles/Modal.css';
 import { useNavigate } from 'react-router-dom';
 
 const CityList = () => {
