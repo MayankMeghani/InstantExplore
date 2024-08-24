@@ -1,10 +1,12 @@
 /* src/Components/Search.css */
 
 .search-container {
+    margin-top: 50px;
+    width: 100%;
+    max-width: 800px; /* Max width for the search bar */
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-left: auto; /* Align to the right in the header */
-    margin-bottom: 20px; /* Adds space below the search bar */
     padding: 10px; /* Adds padding around the search container */
     background-color: #fff; /* Background color for the container */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */

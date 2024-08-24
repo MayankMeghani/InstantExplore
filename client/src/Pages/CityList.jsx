@@ -7,9 +7,8 @@ import './Styles/CityList.css';
 import Button from '../components/addButton';
 import CityForm from '../Forms/CityForm';
 import './Styles/Modal.css';
-import { useNavigate } from 'react-router-dom';
-import Search from '../componenets/Search';
-
+import Search from '../components/Search';
+import Header from '../components/Header';
 const CityList = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,10 +104,9 @@ const CityList = () => {
 
   return (
     <div className="city-list">
-      <Header /> {/* Render the Header component */}
-      <div className="search-container">
+      <Header />
         <Search onSearch={handleSearch} />
-      </div>
+      
       <div className="city-cards"> {/* Add this container for cards */}
         {filteredCities.map((city) => (
           <Card
