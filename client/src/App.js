@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './home';
-import CityList from './components/CityList';
-import AttractionList from './components/AttractionList';
-import AttractionPage from './components/AttractionPage';
+import Home from './Pages/home';
+import CityList from './Pages/CityList';
+import AttractionList from './Pages/AttractionList';
+import AttractionPage from './Pages/AttractionPage';
 
 function App() {
   return (

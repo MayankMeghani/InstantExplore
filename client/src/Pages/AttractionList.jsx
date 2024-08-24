@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getCityAttractions } from '../services/cityServices';
 import { createAttraction, deleteAttraction, getAttraction, updateAttraction } from '../services/attractionService';
-import Card from './Card';
-import Button from './addButton';
-import AttractionForm from './AttractionForm';
-import './Modal.css';
+import Card from '../components/Card';
+import Button from '../components/addButton';
+import AttractionForm from '../Forms/AttractionForm';
+import './Styles/Modal.css';
 import { useNavigate } from 'react-router-dom';
 
 const AttractionList = () => {
