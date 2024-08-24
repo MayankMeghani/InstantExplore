@@ -5,8 +5,8 @@ import { getCities, createCity, deleteCity, updateCity, getCity } from '../servi
 import Card from './Card';
 import Button from './addButton';
 import CityForm from './CityForm';
-import Header from './Header'; // Import Header component
-import Search from './Search'; // Import Search component
+import Header from './Header';
+import Search from './Search';
 import './CityList.css';
 import './Modal.css';
 
@@ -109,18 +109,20 @@ const CityList = () => {
       <div className="search-container">
         <Search onSearch={handleSearch} />
       </div>
-      {filteredCities.map((city) => (
-        <Card
-          key={city._id}
-          Id={city._id}
-          images={city.images || 'default-image-url.jpg'}
-          title={city.name}
-          description={city.state.name}
-          onExploreClick={handleExploreClick}
-          onUpdateClick={handleUpdateClick}
-          onRemoveClick={handleRemoveClick}
-        />
-      ))}
+      <div className="city-cards"> {/* Add this container for cards */}
+        {filteredCities.map((city) => (
+          <Card
+            key={city._id}
+            Id={city._id}
+            images={city.images || ['default-image-url.jpg']}
+            title={city.name}
+            description={city.state.name}
+            onExploreClick={handleExploreClick}
+            onUpdateClick={handleUpdateClick}
+            onRemoveClick={handleRemoveClick}
+          />
+        ))}
+      </div>
       <div>
         <Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add City'}
