@@ -106,3 +106,12 @@
   .authLink a:hover {
     text-decoration: underline;
   }
+  .successMessage {
+  color: green;
+  margin-top: 10px;
+}
+
+.errorMessage {
+  color: red;
+  margin-top: 10px;
+}

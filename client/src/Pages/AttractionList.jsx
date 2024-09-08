@@ -6,6 +6,7 @@ import Card from '../components/Card';
 import Button from '../components/addButton';
 import AttractionForm from '../Forms/AttractionForm';
 import './Styles/Modal.css';
+import './Styles/CityList.css';
 import { useNavigate } from 'react-router-dom';
 
 const AttractionList = () => {
@@ -79,7 +80,7 @@ const AttractionList = () => {
     try {
       if (formMode === 'add') {
         const newAttraction = await createAttraction(attractionData);
-        setAttractions([...attractions, newAttraction]); // Add the newly created attraction
+        setAttractions([...attractions, newAttraction]);
       } else if (formMode === 'update') {
         await updateAttraction(selectedAttraction._id, attractionData);
         setAttractions(attractions.map(attraction => 
@@ -97,7 +98,8 @@ const AttractionList = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="city-list">
+    <div className="list">
+      <div className="cards">
       {attractions.map((attraction) => (
         <Card 
           key={attraction._id}
@@ -105,13 +107,13 @@ const AttractionList = () => {
           description={attraction.description}
           Id={attraction._id}
           rating={attraction.rating}
-          images={attraction.images || ['default-image-url.jpg']} // Ensure `images` is an array
+          images={attraction.images || ['default-image-url.jpg']} 
           onExploreClick={handleExploreClick}
           onUpdateClick={handleUpdateClick}
           onRemoveClick={handleRemoveClick}
         />
       ))}
-      
+      </div>
       <div>
         <Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add Attraction'}

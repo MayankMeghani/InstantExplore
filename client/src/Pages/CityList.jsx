@@ -1,19 +1,22 @@
+// src/Components/CityList.jsx
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getCities, createCity, deleteCity, updateCity, getCity } from '../services/cityServices';
 import Card from '../components/Card';
 import './Styles/CityList.css';
 import Button from '../components/addButton';
 import CityForm from '../Forms/CityForm';
 import './Styles/Modal.css';
-import { useNavigate } from 'react-router-dom';
-
+import Search from '../components/Search';
+import Header from '../components/Header';
 const CityList = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [formMode, setFormMode] = useState('add'); // 'add' or 'update'
+  const [formMode, setFormMode] = useState('add');
   const [selectedCity, setSelectedCity] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,7 +47,6 @@ const CityList = () => {
 
   const handleExploreClick = async (cityId) => {
     try {
-      console.log(`Explore clicked for city with ID: ${cityId}`);
       navigate(`/cities/${cityId}/attractions`);
     } catch (error) {
       console.error('Error navigating to city attractions:', error);
@@ -53,7 +55,6 @@ const CityList = () => {
 
   const handleRemoveClick = async (cityId) => {
     try {
-      console.log(`Remove clicked for city with ID: ${cityId}`);
       await deleteCity(cityId);
       setCities(cities.filter(city => city._id !== cityId));
     } catch (error) {
@@ -76,10 +77,10 @@ const CityList = () => {
     try {
       if (formMode === 'add') {
         const newCity = await createCity(cityData);
-        setCities([...cities, newCity]); // Add the newly created city
+        setCities([...cities, newCity]);
       } else if (formMode === 'update') {
         await updateCity(selectedCity._id, cityData);
-        setCities(cities.map(city => 
+        setCities(cities.map(city =>
           city._id === selectedCity._id ? { ...city, ...cityData } : city
         ));
       }
@@ -90,23 +91,36 @@ const CityList = () => {
     }
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredCities = cities.filter(city =>
+    city.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="city-list">
-      {cities.map((city) => (
-        <Card
-          key={city._id}
-          Id={city._id}
-          images={city.images || 'default-image-url.jpg'} 
-          title={city.name}
-          description={city.state.name} 
-          onExploreClick={handleExploreClick}
-          onUpdateClick={handleUpdateClick}
-          onRemoveClick={handleRemoveClick}
-        />
-      ))}
+    <div className="list">
+      <Header />
+        <Search onSearch={handleSearch} />
+      
+      <div className="cards"> 
+        {filteredCities.map((city) => (
+          <Card
+            key={city._id}
+            Id={city._id}
+            images={city.images || ['default-image-url.jpg']}
+            title={city.name}
+            description={city.state.name}
+            onExploreClick={handleExploreClick}
+            onUpdateClick={handleUpdateClick}
+            onRemoveClick={handleRemoveClick}
+          />
+        ))}
+      </div>
       <div>
         <Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add City'}
@@ -120,7 +134,7 @@ const CityList = () => {
               <button className="close-button" onClick={handleClose}>&times;</button>
             </div>
             <div className="modal-body">
-              <CityForm 
+              <CityForm
                 initialData={selectedCity}
                 onSubmit={handleFormSubmit}
                 mode={formMode}

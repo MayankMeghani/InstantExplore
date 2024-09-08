@@ -1,20 +1,25 @@
-// src/Components/Header.js
+// src/Components/Header.jsx
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Styles/Header.css';
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import Search from './Search'; // Import the Search component
 
-const Header = () => {
+const Header = ({ showSearch }) => { // Add showSearch as a prop
+  const location = useLocation();
+  const isTransparent = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup';
+
   return (
-    <header className="header">
+    <header className={`header ${isTransparent ? 'transparent' : 'solid'}`}>
       <Link to="/" className="header-logo">
-        <img src={'https://firebasestorage.googleapis.com/v0/b/instantexplore.appspot.com/o/Background%2Flogo.png?alt=media&token=884161e5-0fa3-4211-ac55-e7fec6d12581'} alt="InstantExplore Logo" className="logo-img" />
+        <img src={'https://firebasestorage.googleapis.com/v0/b/instantexplore.appspot.com/o/Background%2Flogo.png?alt=media&token=3546f92a-27a7-47a0-baa6-530f7788a7cb'} alt="InstantExplore Logo" className="logo-img" />
         InstantExplore
       </Link>
       <nav className="header-nav">
         <Link to="/">Home</Link>
-        <Link to="/login">Log-in</Link> {/* Link to Log-In page */}
-        <Link to="/signin">Sign-in</Link> {/* Link to Sign-In page */}
+        <Link to="/login">Log-in</Link>
+        <Link to="/signup">Sign-Up</Link>
       </nav>
+      {showSearch && <Search />}
       <button className="header-toggle">☰</button>
     </header>
   );

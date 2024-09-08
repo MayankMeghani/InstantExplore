@@ -1,11 +1,19 @@
-.city-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); /* Responsive grid with cards */
-    margin: 180px; /* Adds space between the cards */
-    justify-content: center; /* Centers the grid items horizontally */
-  }
-  
-  .card {
-    /* Additional card styling can go here */
-  }
-  
+/* src/Components/CityList.css */
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); /* Responsive grid with cards */
+  gap: 20px; /* Space between the cards */
+  width: 100%;
+  max-width: 1200px; /* Max width for card container */
+  margin: 20px auto; /* Margin to separate from search bar */
+  justify-items: center; /* Center grid items */
+}
+
