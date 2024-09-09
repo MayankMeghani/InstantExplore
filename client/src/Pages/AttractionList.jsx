@@ -8,7 +8,8 @@ import AttractionForm from '../Forms/AttractionForm';
 import './Styles/Modal.css';
 import './Styles/CityList.css';
 import { useNavigate } from 'react-router-dom';
-
+import Header from '../components/Header';
+import Search from '../components/Search';
 const AttractionList = () => {
   const { cityId } = useParams();
   const [attractions, setAttractions] = useState([]);
@@ -18,6 +19,9 @@ const AttractionList = () => {
   const [formMode, setFormMode] = useState('add');
   const [selectedAttraction, setSelectedAttraction] = useState(null);
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     console.log(`Fetching attractions for city with ID: ${cityId}`);
@@ -25,6 +29,9 @@ const AttractionList = () => {
       try {
         const data = await getCityAttractions(cityId);
         setAttractions(data);
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        setIsAdmin(user?.isAdmin || false);
+
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -93,14 +100,23 @@ const AttractionList = () => {
       console.error('Error submitting form:', error);
     }
   };
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredattraction = attractions.filter(attraction =>
+    attraction.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="list">
+    <Header />
+    <Search onSearch={handleSearch} />
       <div className="cards">
-      {attractions.map((attraction) => (
+      {filteredattraction.map((attraction) => (
         <Card 
           key={attraction._id}
           title={attraction.name}
@@ -111,13 +127,15 @@ const AttractionList = () => {
           onExploreClick={handleExploreClick}
           onUpdateClick={handleUpdateClick}
           onRemoveClick={handleRemoveClick}
+          isAdmin={isAdmin}
+
         />
       ))}
       </div>
       <div>
-        <Button onClick={handleButtonClick}>
+      {isAdmin && (<Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add Attraction'}
-        </Button>
+        </Button>)}
       </div>
       {showForm && (
         <div className="modal-overlay">

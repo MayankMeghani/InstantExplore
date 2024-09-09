@@ -52,7 +52,7 @@ const validateUser = async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
-    res.status(200).json({ message: "User authenticated successfully" });
+    res.status(200).json({ user: { _id: user.id,name: user.name, email: user.email, isAdmin:user.isAdmin }, message: "User authenticated successfully" });
 }
 
 export {getUsers,getUser,createUser, updateUser, deleteUser,validateUser};

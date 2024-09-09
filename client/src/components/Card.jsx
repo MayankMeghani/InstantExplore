@@ -1,18 +1,19 @@
+// Card.js
 import React from 'react';
 import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css'; // Import the carousel CSS
-import './Styles/Card.css'; // Import the card CSS
-import { Star } from 'lucide-react'; // Assuming you're using lucide-react for star icons
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import './Styles/Card.css';
+import { Star } from 'lucide-react';
 
-const Card = ({ Id, images, title, description, rating, onExploreClick, onRemoveClick, onUpdateClick }) => {
+const Card = ({ Id, images, title, description, rating, onExploreClick, onRemoveClick, onUpdateClick, isAdmin }) => {
   return (
     <div className="card">
       <Carousel
-        showThumbs={false} // Hide thumbnails
-        infiniteLoop // Loop through the images
-        autoPlay // Automatically transition between slides
-        interval={5000} // Transition interval in milliseconds
-        transitionTime={500} // Transition time in milliseconds
+        showThumbs={false}
+        infiniteLoop
+        autoPlay
+        interval={5000}
+        transitionTime={500}
       >
         {images.map((image, index) => (
           <div key={index}>
@@ -36,13 +37,17 @@ const Card = ({ Id, images, title, description, rating, onExploreClick, onRemove
           </div>
         )}
         <p>{description}</p>
-        <button onClick={() => onExploreClick(Id)}>Explore</button>     
-        <button onClick={() => onUpdateClick(Id)} style={{ background: 'green', margin: '8px' }}>
-          Update
-        </button>
-        <button onClick={() => onRemoveClick(Id)} style={{ background: 'red'}}>
-          Remove
-        </button>
+        <button onClick={() => onExploreClick(Id)}>Explore</button>
+        {isAdmin && (
+          <>
+            <button onClick={() => onUpdateClick(Id)} style={{ background: 'green', margin: '8px' }}>
+              Update
+            </button>
+            <button onClick={() => onRemoveClick(Id)} style={{ background: 'red' }}>
+              Remove
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

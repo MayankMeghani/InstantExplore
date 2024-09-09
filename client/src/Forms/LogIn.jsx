@@ -3,11 +3,14 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import styles from './Styles/Auth.module.css';
 import {logIn} from '../services/AuthenticationService';
+import { useNavigate } from 'react-router-dom';
+
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +23,9 @@ const LogIn = () => {
       const response=await logIn(userData);
 
       setMessage(response.message); 
-      setError(''); 
+      setError('');    
+      sessionStorage.setItem('user', JSON.stringify(response.user));
+      navigate('/');
 
     } catch (err) {
       setMessage('');

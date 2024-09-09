@@ -1,5 +1,6 @@
 import Review from "../models/Review.js";
 import Attraction from "../models/Attraction.js";
+import User from "../models/User.js";
 
 const getReviews = async (req, res) => {
     try {
@@ -28,13 +29,17 @@ const createReview = async (req, res) => {
         await existingAttraction.calculateAverageRating();
         await existingAttraction.save();
         
-
+        const existingUser = await User.findById(req.body.user);
+        if(!existingUser) return res.status(400).json({message:'User not found'});
         const newReview = new Review (req.body);
+
         await newReview.save();
 
         existingAttraction.reviews.push(newReview._id);
-         await existingAttraction.calculateAverageRating();
+        await existingAttraction.calculateAverageRating();
         await existingAttraction.save(); 
+
+        existingUser.reviews.push(newReview._id);
         res.status(201).json(newReview); 
     }catch(error){
         res.status(500).json({ message: error.message });

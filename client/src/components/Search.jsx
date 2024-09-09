@@ -1,4 +1,3 @@
-// src/Components/Search.jsx
 import React, { useState } from 'react';
 import './Styles/Search.css';
 
@@ -8,7 +7,7 @@ const Search = ({ onSearch }) => {
   const handleChange = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
-    onSearch(value); // Call the onSearch function from props
+    onSearch(value); 
   };
 
   return (
@@ -16,11 +15,10 @@ const Search = ({ onSearch }) => {
       <input
         type="text"
         className="search-input"
-        placeholder="Search cities..."
+        placeholder="Search..."
         value={searchTerm}
         onChange={handleChange}
       />
-      {/* Remove search button if it's not needed */}
     </div>
   );
 };

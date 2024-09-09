@@ -66,7 +66,9 @@ const SignUp = () => {
               <input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} required />
             </div>
 
+            <div className={styles.formGroup}>
               <label>Select Role</label>
+              </div>
               <div className={styles.radioGroup}>
                 <input
                   type="radio"

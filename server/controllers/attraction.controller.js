@@ -16,9 +16,14 @@ const getAttractions = async (req, res) => {
 
 const getAttraction = async (req, res) => {
     try {
-        const attraction = await Attraction.findById(req.params.id).populate({
-            path: 'reviews',
-          });
+        const attraction = await Attraction.findById(req.params.id)
+        .populate({
+          path: 'reviews', // Populating reviews
+          populate: {
+            path: 'user',  // Nested population: populating the user within each review
+          }
+        });
+      
         if (!attraction) return res.status(404).json({ message: "Attraction not found" });
         await attraction.calculateAverageRating();
         await attraction.save();

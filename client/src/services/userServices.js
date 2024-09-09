@@ -11,4 +11,9 @@ const ValidateUser = async(userData)=>{
     return response.data;
 };
 
-export {RegisterUser,ValidateUser};
+const getUserReviews = async(userId)=>{
+    const response = await api.get('/users/reviews', userId);
+    return response.data;
+}
+
+export {RegisterUser,ValidateUser,getUserReviews};

@@ -1,4 +1,3 @@
-// src/Components/CityList.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCities, createCity, deleteCity, updateCity, getCity } from '../services/cityServices';
@@ -9,6 +8,7 @@ import CityForm from '../Forms/CityForm';
 import './Styles/Modal.css';
 import Search from '../components/Search';
 import Header from '../components/Header';
+
 const CityList = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,6 +17,7 @@ const CityList = () => {
   const [formMode, setFormMode] = useState('add');
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +25,12 @@ const CityList = () => {
       try {
         const response = await getCities();
         setCities(response);
+
+        // Retrieve the user's admin status from the session
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        setIsAdmin(user?.isAdmin || false);
+
+        
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -105,7 +112,7 @@ const CityList = () => {
   return (
     <div className="list">
       <Header />
-        <Search onSearch={handleSearch} />
+      <Search onSearch={handleSearch} />
       
       <div className="cards"> 
         {filteredCities.map((city) => (
@@ -116,15 +123,19 @@ const CityList = () => {
             title={city.name}
             description={city.state.name}
             onExploreClick={handleExploreClick}
-            onUpdateClick={handleUpdateClick}
-            onRemoveClick={handleRemoveClick}
+            onUpdateClick={handleUpdateClick }
+            onRemoveClick={handleRemoveClick }
+            isAdmin={isAdmin}
+
           />
         ))}
       </div>
       <div>
-        <Button onClick={handleButtonClick}>
-          {showForm ? 'Cancel' : 'Add City'}
-        </Button>
+        {isAdmin && (
+          <Button onClick={handleButtonClick}>
+            {showForm ? 'Cancel' : 'Add City'}
+          </Button>
+        )}
       </div>
       {showForm && (
         <div className="modal-overlay">

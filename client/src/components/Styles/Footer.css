@@ -1,89 +1,71 @@
-/* Ensure full height for body and remove default margin */
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Full viewport height */
-}
-
-.main-content {
-  flex: 1; /* Allow main content to grow and push footer to the bottom */
-}
-
 .footer {
-  background: #333; /* Dark background color */
-  color: #ddd; /* Light text color for better contrast */
-  padding: 15px 0; /* Reduced padding for a smaller height */
-  display: flex; /* Flexbox for layout */
-  flex-direction: column; /* Stack items vertically */
-  align-items: center; /* Center items horizontally */
-  width: 100%; /* Full width */
-  position: relative; /* Positioning context */
-  bottom: 0; /* Align at the bottom */
-  z-index: 1000; /* Ensure it stays on top of other content */
+  background-color: #333;
+  color: #f0f0f0;
+  padding: 20px 0;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  z-index: 1000;
 }
 
 .footer-content {
-  max-width: 1200px; /* Maximum width of footer content */
-  width: 100%; /* Full width */
-  display: flex; /* Flexbox for layout */
-  flex-direction: column; /* Stack items vertically */
-  align-items: center; /* Center items horizontally */
-  text-align: center; /* Center text */
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .footer-logo {
-  font-size: 1.75rem; /* Smaller font size for the logo */
-  font-weight: 700; /* Bold font weight */
-  color: #f76c6c; /* Logo color */
-  text-transform: uppercase; /* Uppercase text */
-  margin-bottom: 10px; /* Reduced space below the logo */
-  letter-spacing: 1px; /* Adjust letter spacing */
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f76c6c;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
 }
 
 .footer-nav {
-  display: flex; /* Flexbox for horizontal layout */
-  margin-bottom: 10px; /* Reduced space below the navigation */
+  display: flex;
+  margin-bottom: 15px;
 }
 
 .footer-nav a {
-  color: #ddd; /* Light text color for links */
-  text-decoration: none; /* Remove underline from links */
-  margin: 0 10px; /* Reduced space between links */
-  font-size: 0.9rem; /* Smaller font size for links */
-  transition: color 0.3s; /* Smooth color transition on hover */
+  color: #f0f0f0;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 1rem;
+  transition: color 0.3s;
 }
 
 .footer-nav a:hover {
-  color: #f76c6c; /* Change color on hover */
+  color: #f76c6c;
 }
 
 .footer-bottom {
-  font-size: 0.75rem; /* Smaller font size for copyright text */
-  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border at the top */
-  padding-top: 5px; /* Reduced padding for spacing */
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(240, 240, 240, 0.2);
+  padding-top: 10px;
 }
 
 @media (max-width: 768px) {
-  .footer-content {
-      padding: 10px; /* Reduced padding for small screens */
+  .footer {
+    padding: 15px 0;
   }
-  
+
+  .footer-content {
+    width: 100%;
+    padding: 0 20px;
+  }
+
   .footer-nav {
-      flex-direction: column; /* Stack links vertically on small screens */
-      margin-bottom: 10px; /* Reduced space between items */
+    flex-direction: column;
+    margin-bottom: 10px;
   }
 
   .footer-nav a {
-      margin: 5px 0; /* Space between links */
+    margin: 5px 0;
   }
 }
