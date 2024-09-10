@@ -26,7 +26,6 @@ const CityList = () => {
         const response = await getCities();
         setCities(response);
 
-        // Retrieve the user's admin status from the session
         const user = JSON.parse(sessionStorage.getItem('user'));
         setIsAdmin(user?.isAdmin || false);
 

@@ -1,5 +1,3 @@
-// src/services/authService.js
-
 import{RegisterUser,ValidateUser} from './userServices';
 
 export const logIn = async (userData) => {
