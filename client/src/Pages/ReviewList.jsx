@@ -2,7 +2,7 @@ import React,{useState,useEffect} from "react";
 import {getUserReviews} from "../services/userServices";  
 import ReviewCard from "../components/ReviewCard";
 import ReviewForm from "../Forms/ReviewForm";
-import {createReview,updateReview,deleteReview} from "../services/attractionService";
+import {createReview,updateReview,deleteReview} from "../services/reviewService";
 import Header from "../components/Header";
 import Search from "../components/Search";
 import "./Styles/ReviewList.css"
@@ -80,7 +80,7 @@ const ReviewList =  ()=>{
       <div className="list">
         <Header/>
         <Search onSearch={handleSearch}/>
-        {filteredReviews.map((review, index) => (
+        {filteredReviews.length > 0 ?filteredReviews.map((review, index) => (
           <ReviewCard
             Id={index}
             key={index}
@@ -90,7 +90,9 @@ const ReviewList =  ()=>{
             handleModifyReview={handleModifyReview}
             handleRemoveReview={handleRemoveReview}
           />
-        ))}
+        )) : (
+          <div>No review found.</div>  
+        )}
       </div>
         
       {showReviewForm && (

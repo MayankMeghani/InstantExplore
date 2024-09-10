@@ -15,7 +15,7 @@ const AttractionList = () => {
   const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [error, setError] = useState(null);
+  const [formError, setformError] = useState(null);
   const [formMode, setFormMode] = useState('add');
   const [selectedAttraction, setSelectedAttraction] = useState(null);
   const navigate = useNavigate();
@@ -34,7 +34,6 @@ const AttractionList = () => {
 
         setLoading(false);
       } catch (err) {
-        setError(err.message);
         setLoading(false);
       }
     };
@@ -49,7 +48,7 @@ const AttractionList = () => {
   };
 
   const handleClose = () => {
-    setShowForm(false); 
+    setShowForm(false);
     setSelectedAttraction(null);
   };
 
@@ -63,7 +62,7 @@ const AttractionList = () => {
 
   const handleRemoveClick = async (Id) => {
     try {
-      await deleteAttraction(Id); 
+      await deleteAttraction(Id);
       setAttractions(attractions.filter(attraction => attraction._id !== Id));
     } catch (error) {
       console.error('Error removing attraction:', error);
@@ -90,7 +89,7 @@ const AttractionList = () => {
         setAttractions([...attractions, newAttraction]);
       } else if (formMode === 'update') {
         await updateAttraction(selectedAttraction._id, attractionData);
-        setAttractions(attractions.map(attraction => 
+        setAttractions(attractions.map(attraction =>
           attraction._id === selectedAttraction._id ? { ...attraction, ...attractionData } : attraction
         ));
       }
@@ -98,42 +97,46 @@ const AttractionList = () => {
       setSelectedAttraction(null);
     } catch (error) {
       console.error('Error submitting form:', error);
+      setformError(error.response?.data?.message);
     }
   };
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
-  const filteredattraction = attractions.filter(attraction =>
+  const filteredAttraction = attractions.filter(attraction =>
     attraction.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="list">
-    <Header />
-    <Search onSearch={handleSearch} />
+      <Header />
+      <Search onSearch={handleSearch} />
       <div className="cards">
-      {filteredattraction.map((attraction) => (
-        <Card 
-          key={attraction._id}
-          title={attraction.name}
-          description={attraction.description}
-          Id={attraction._id}
-          rating={attraction.rating}
-          images={attraction.images || ['default-image-url.jpg']} 
-          onExploreClick={handleExploreClick}
-          onUpdateClick={handleUpdateClick}
-          onRemoveClick={handleRemoveClick}
-          isAdmin={isAdmin}
-
-        />
-      ))}
+        {filteredAttraction.length > 0 ? (
+          filteredAttraction.map((attraction) => (
+            <Card
+              key={attraction._id}
+              title={attraction.name}
+              description={attraction.description}
+              Id={attraction._id}
+              rating={attraction.rating}
+              images={attraction.images || ['default-image-url.jpg']}
+              onExploreClick={handleExploreClick}
+              onUpdateClick={handleUpdateClick}
+              onRemoveClick={handleRemoveClick}
+              isAdmin={isAdmin}
+            />
+          ))
+        ) : (
+          <div>No attraction found.</div>  
+        )}
       </div>
       <div>
-      {isAdmin && (<Button onClick={handleButtonClick}>
+        {isAdmin && (<Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add Attraction'}
         </Button>)}
       </div>
@@ -145,10 +148,11 @@ const AttractionList = () => {
               <button className="close-button" onClick={handleClose}>&times;</button>
             </div>
             <div className="modal-body">
-              <AttractionForm 
+              <AttractionForm
                 initialData={selectedAttraction}
                 onSubmit={handleFormSubmit}
                 mode={formMode}
+                error={formError}
               />
             </div>
           </div>

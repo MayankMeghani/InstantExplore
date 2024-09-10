@@ -3,7 +3,6 @@ import State from "../models/State.js";
 import Attraction from "../models/Attraction.js";
 import { ObjectId } from 'mongodb';
 
-// Get all cities with their associated state name
 const getCities = async (req, res) => {
   try {
     const cities = await City.find().populate('state', 'name');
@@ -13,7 +12,6 @@ const getCities = async (req, res) => {
   }
 };
 
-// Get a single city by ID with its associated state name
 const getCity = async (req, res) => {
   try {
     const city = await City.findById(req.params.id).populate('state', 'name');
@@ -27,8 +25,7 @@ const getCity = async (req, res) => {
 const getCityAttractions = async (req, res) => {
   try {
     const city = await City.findById(req.params.id)
-      // .populate('state')           // Populate the state field
-      .populate('attractions');    // Populate the attractions array
+      .populate('attractions');    
 
     if (!city) {
       return res.status(404).json({ message: 'City not found' });
@@ -41,23 +38,32 @@ const getCityAttractions = async (req, res) => {
 };
 
 
-// Create a new city
 const createCity = async (req, res) => {
   try {
     const { name, state, images } = req.body;
 
+    // Check if the state exists
     const existingState = await State.findById(state);
     if (!existingState) {
       return res.status(400).json({ message: 'Invalid State ID' });
     }
 
+    // Check if the city with the same name and state ID already exists
+    const existingCity = await City.findOne({ name, state });
+    if (existingCity) {
+      return res.status(400).json({ message: 'City with the same name and state already exists' });
+    }
+
+    // Create the new city
     const city = new City({ name, state, images });
     await city.save();
+    
     res.status(201).json(city);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 const updateCity = async (req, res) => {

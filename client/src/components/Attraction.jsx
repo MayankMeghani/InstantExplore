@@ -1,7 +1,7 @@
 import React, {useState } from 'react';
 import './Styles/Attraction.css';
 import ReviewForm from '../Forms/ReviewForm.jsx';
-import { createReview, updateReview, deleteReview } from '../services/attractionService';
+import { createReview, updateReview, deleteReview } from '../services/reviewService.js';
 import ImageGrid from './ImageGrid.jsx';
 import './Styles/Modal.css';
 import ReviewCard from './ReviewCard.jsx';
@@ -9,6 +9,7 @@ import ReviewCard from './ReviewCard.jsx';
 const Attraction = ({ attraction, user }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewToEdit, setReviewToEdit] = useState(null);
+  const [formError, setFormError] = useState(null);
 
   const handleClose = () => {
     setShowReviewForm(false); 
@@ -20,16 +21,18 @@ const Attraction = ({ attraction, user }) => {
         const updatedReview = await updateReview(reviewToEdit._id, review);
         console.log('Review updated:', updatedReview);
       } else {
-        console.log(review);
         const newReview = await createReview(review);
         console.log('New review created:', newReview);
       }
       setShowReviewForm(false);
       setReviewToEdit(null);
+      setFormError(null); // Clear form error on success
     } catch (error) {
       console.error('Error submitting review:', error);
+      setFormError(error.response?.data?.message || 'Failed to submit review'); // Pass the error message
     }
   };
+  
 
   const handleModifyReview = (reviewId) => {
     const reviewToModify = attraction.reviews.find(review => review._id === reviewId);
@@ -82,9 +85,12 @@ const Attraction = ({ attraction, user }) => {
           Write a Review
         </button>
         )}
-        {attraction.reviews.map((review, index) => (
+        { attraction.reviews.length>0?(
+        attraction.reviews.map((review, index) => (
           <ReviewCard Id={index} title={review.user.name} review={review} modifiable={(user.role==="Admin")} handleModifyReview={handleModifyReview} handleRemoveReview={handleRemoveReview}/>
-        ))}
+        ))) : (
+          <div>No review found.</div>  
+        )}
       </div>
 
       {showReviewForm && (
@@ -100,6 +106,7 @@ const Attraction = ({ attraction, user }) => {
           user={user._id}
           initialReview={reviewToEdit}
           onSubmit={handleSubmitReview}
+          error={formError} 
         />
          </div>
           </div>

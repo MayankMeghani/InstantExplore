@@ -18,6 +18,7 @@ const CityList = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [formError, setFormError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,6 +94,7 @@ const CityList = () => {
       setShowForm(false);
       setSelectedCity(null);
     } catch (error) {
+      setFormError(error.response?.data?.message);
       console.error('Error submitting form:', error);
     }
   };
@@ -114,7 +116,7 @@ const CityList = () => {
       <Search onSearch={handleSearch} />
       
       <div className="cards"> 
-        {filteredCities.map((city) => (
+        {filteredCities.length > 0 ? (filteredCities.map((city) => (
           <Card
             key={city._id}
             Id={city._id}
@@ -127,7 +129,9 @@ const CityList = () => {
             isAdmin={isAdmin}
 
           />
-        ))}
+        ))) : (
+          <div>No City found.</div>  
+        )}
       </div>
       <div>
         {isAdmin && (
@@ -148,6 +152,7 @@ const CityList = () => {
                 initialData={selectedCity}
                 onSubmit={handleFormSubmit}
                 mode={formMode}
+                error={formError}
               />
             </div>
           </div>

@@ -50,6 +50,7 @@ const AttractionPage = () => {
     <>
     <Header/>
     <Attraction attraction={attractionData} user={user} />
+    
     </>
   );
 };

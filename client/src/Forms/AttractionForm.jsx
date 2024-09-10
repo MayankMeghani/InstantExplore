@@ -3,7 +3,7 @@ import api from '../api/api';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../api/firebase';
 
-const AttractionForm = ({ initialData, onSubmit, mode }) => {
+const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
@@ -67,7 +67,6 @@ const AttractionForm = ({ initialData, onSubmit, mode }) => {
     try {
       console.log('Attraction data:', attractionData);
       onSubmit(attractionData);
-      alert(`Attraction ${mode === 'add' ? 'added' : 'updated'} successfully!`);
     } catch (error) {
       console.error(`Error ${mode === 'add' ? 'adding' : 'updating'} attraction:`, error);
     }
@@ -85,6 +84,8 @@ const AttractionForm = ({ initialData, onSubmit, mode }) => {
   };
 
   return (
+    <>
+    {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>} 
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="name">Attraction Name:</label>
@@ -164,8 +165,9 @@ const AttractionForm = ({ initialData, onSubmit, mode }) => {
           <img key={index} src={url} alt="Attraction" style={{maxWidth: '200px', marginTop: '10px'}} />
         ))}
       </div>
-      <button type="submit">{mode === 'add' ? 'Add Attraction' : 'Update Attraction'}</button>
+      <button type="submit" disabled={!imageUrls} >{mode === 'add' ? 'Add Attraction' : 'Update Attraction'}</button>
     </form>
+    </>
   );
 };
 

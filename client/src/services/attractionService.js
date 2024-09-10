@@ -25,18 +25,4 @@ const deleteAttraction = async (id) => {
     return response.data;
   };
 
-const createReview = async (Review) => {
-  const response = await api.post(`/reviews`,Review);
-  return response.data;
-};
-  
-const updateReview = async (id,Review) => {
-  const response = await api.put(`/reviews/${id}`, Review);
-  return response.data;
-};
-
-const deleteReview = async (id) => {
-  const response = await api.delete(`/reviews/${id}`);
-  return response.data;
-};  
-  export { getAttractions, getAttraction, createAttraction, updateAttraction, deleteAttraction, createReview ,updateReview, deleteReview};
+  export { getAttractions, getAttraction, createAttraction, updateAttraction, deleteAttraction};
