@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Star } from 'lucide-react';
+import React, {useState } from 'react';
 import './Styles/Attraction.css';
 import ReviewForm from '../Forms/ReviewForm.jsx';
 import { createReview, updateReview, deleteReview } from '../services/attractionService';
 import ImageGrid from './ImageGrid.jsx';
 import './Styles/Modal.css';
+import ReviewCard from './ReviewCard.jsx';
 
-const Attraction = ({ attraction }) => {
+const Attraction = ({ attraction, user }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewToEdit, setReviewToEdit] = useState(null);
 
@@ -20,6 +20,7 @@ const Attraction = ({ attraction }) => {
         const updatedReview = await updateReview(reviewToEdit._id, review);
         console.log('Review updated:', updatedReview);
       } else {
+        console.log(review);
         const newReview = await createReview(review);
         console.log('New review created:', newReview);
       }
@@ -74,59 +75,31 @@ const Attraction = ({ attraction }) => {
 
       <div className="attraction-reviews">
         <h2>Reviews</h2>
-        <button className="write-review-btn" onClick={() => {
+        {user && user.role==="User" &&( <button className="write-review-btn" onClick={() => {
           setReviewToEdit(null);
           setShowReviewForm(true);
         }}>
           Write a Review
         </button>
+        )}
         {attraction.reviews.map((review, index) => (
-          <div key={index} className="review">
-            <div className="review-header">
-              <span className="reviewer-name">{review.userName}</span>
-              <span className="review-rating">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    fill={i < review.rating ? "gold" : "none"}
-                    stroke={i < review.rating ? "gold" : "currentColor"}
-                  />
-                ))}
-              </span>
-            </div>
-            <p className="review-text">{review.text}</p>
-            <button 
-              className="modify-review-btn" 
-              onClick={() => handleModifyReview(review._id)}
-            >
-              Modify
-            </button>
-            <button 
-              className="remove-review-btn" 
-              onClick={() => handleRemoveReview(review._id)}
-            >
-              Remove
-            </button>
-          </div>
+          <ReviewCard Id={index} title={review.user.name} review={review} modifiable={(user.role==="Admin")} handleModifyReview={handleModifyReview} handleRemoveReview={handleRemoveReview}/>
         ))}
       </div>
 
       {showReviewForm && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <div className="modal-header"></div>
+            <div className="modal-header">
+            <h3>{reviewToEdit === null ? 'Write a Review' : 'Edit Review'}</h3>
             <button className="close-button" onClick={handleClose}>&times;</button>
-           
+            </div>
             <div className="modal-body"></div>
         <ReviewForm
           attraction={attraction._id}
+          user={user._id}
           initialReview={reviewToEdit}
           onSubmit={handleSubmitReview}
-          // onClose={() => {
-          //   setShowReviewForm(false);
-          //   setReviewToEdit(null);
-          // }}
         />
          </div>
           </div>

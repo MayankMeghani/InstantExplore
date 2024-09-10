@@ -6,8 +6,10 @@ import Card from '../components/Card';
 import Button from '../components/addButton';
 import AttractionForm from '../Forms/AttractionForm';
 import './Styles/Modal.css';
+import './Styles/CityList.css';
 import { useNavigate } from 'react-router-dom';
-
+import Header from '../components/Header';
+import Search from '../components/Search';
 const AttractionList = () => {
   const { cityId } = useParams();
   const [attractions, setAttractions] = useState([]);
@@ -17,6 +19,9 @@ const AttractionList = () => {
   const [formMode, setFormMode] = useState('add');
   const [selectedAttraction, setSelectedAttraction] = useState(null);
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     console.log(`Fetching attractions for city with ID: ${cityId}`);
@@ -24,6 +29,9 @@ const AttractionList = () => {
       try {
         const data = await getCityAttractions(cityId);
         setAttractions(data);
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        setIsAdmin(user?.isAdmin || false);
+
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -79,7 +87,7 @@ const AttractionList = () => {
     try {
       if (formMode === 'add') {
         const newAttraction = await createAttraction(attractionData);
-        setAttractions([...attractions, newAttraction]); // Add the newly created attraction
+        setAttractions([...attractions, newAttraction]);
       } else if (formMode === 'update') {
         await updateAttraction(selectedAttraction._id, attractionData);
         setAttractions(attractions.map(attraction => 
@@ -92,29 +100,42 @@ const AttractionList = () => {
       console.error('Error submitting form:', error);
     }
   };
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredattraction = attractions.filter(attraction =>
+    attraction.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="city-list">
-      {attractions.map((attraction) => (
+    <div className="list">
+    <Header />
+    <Search onSearch={handleSearch} />
+      <div className="cards">
+      {filteredattraction.map((attraction) => (
         <Card 
           key={attraction._id}
           title={attraction.name}
           description={attraction.description}
           Id={attraction._id}
-          images={attraction.images || ['default-image-url.jpg']} // Ensure `images` is an array
+          rating={attraction.rating}
+          images={attraction.images || ['default-image-url.jpg']} 
           onExploreClick={handleExploreClick}
           onUpdateClick={handleUpdateClick}
           onRemoveClick={handleRemoveClick}
+          isAdmin={isAdmin}
+
         />
       ))}
-      
+      </div>
       <div>
-        <Button onClick={handleButtonClick}>
+      {isAdmin && (<Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add Attraction'}
-        </Button>
+        </Button>)}
       </div>
       {showForm && (
         <div className="modal-overlay">

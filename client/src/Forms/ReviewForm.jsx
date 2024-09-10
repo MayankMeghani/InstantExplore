@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 
-const ReviewForm = ({ attraction, initialReview, onSubmit }) => {
+const ReviewForm = ({ attraction, user,initialReview, onSubmit }) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
 
@@ -14,8 +14,10 @@ const ReviewForm = ({ attraction, initialReview, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     const reviewData = {
       attraction,
+      user,
       rating,
       text: reviewText,
     };
@@ -28,7 +30,6 @@ const ReviewForm = ({ attraction, initialReview, onSubmit }) => {
   return (
     <div className="review-form-overlay">
       <form className="review-form" onSubmit={handleSubmit}>
-        <h2>{initialReview ? 'Edit Review' : 'Write a Review'}</h2>
         <div className="rating-input">
           {[...Array(5)].map((_, i) => (
             <Star
@@ -51,7 +52,6 @@ const ReviewForm = ({ attraction, initialReview, onSubmit }) => {
           <button type="submit">
             {initialReview ? 'Update Review' : 'Submit Review'}
           </button>
-          {/* <button type="button" onClick={onClose}>Cancel</button> */}
         </div>
       </form>
     </div>

@@ -44,5 +44,26 @@ const attractionSchema = new mongoose.Schema({
   }],
 });
 
+attractionSchema.methods.calculateAverageRating = async function() {
+  const Review = mongoose.model('Review');
+  const result = await Review.aggregate([
+    {
+      $match: { _id: { $in: this.reviews } }
+    },
+    {
+      $group: {
+        _id: null,
+        averageRating: { $avg: '$rating' }
+      }
+    }
+  ]);
+
+  if (result.length > 0) {
+    this.rating = result[0].averageRating;
+  } else {
+    this.rating = 0;
+  }
+}
+
 const Attraction = mongoose.model('Attraction', attractionSchema);
 export default Attraction;

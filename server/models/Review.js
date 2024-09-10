@@ -4,7 +4,7 @@ const reviewSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false,
+    required: true,
   },
   attraction: {
     type: mongoose.Schema.Types.ObjectId,
@@ -26,6 +26,7 @@ const reviewSchema = new mongoose.Schema({
   //   default: Date.now,
   // },
 });
+
 
 const Review = mongoose.model('Review', reviewSchema);
 export default Review;

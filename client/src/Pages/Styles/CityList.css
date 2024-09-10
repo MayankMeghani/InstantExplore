@@ -1,5 +1,5 @@
 /* src/Components/CityList.css */
-.city-list {
+.list {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,7 +7,7 @@
 }
 
 
-.city-cards {
+.cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); /* Responsive grid with cards */
   gap: 20px; /* Space between the cards */
@@ -17,6 +17,3 @@
   justify-items: center; /* Center grid items */
 }
 
-.card {
-  /* Card styles remain the same, defined in Card.css */
-}
