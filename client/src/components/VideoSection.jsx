@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './Styles/VideoSection.css';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../hooks/userContext';
 
 const VideoSection = () => {
   const navigate = useNavigate();
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [welcomeMessage,setWelcomeMessage] = useState('Welcome to InstantExplore!');
-  useEffect(() => {
-    const user = JSON.parse(sessionStorage.getItem('user'));
-    if(user){
-    setWelcomeMessage(`Welcome back,${user.name}`);
-    }
-  },[])
-  const handleRedirect = () => {
-    navigate('/cities');
-  };
+  const [welcomeMessage, setWelcomeMessage] = useState('Welcome to InstantExplore!');
+  const { user } = useUser();  // Correctly destructure the user from useUser hook
 
-  const handleVideoLoad = () => {
+  useEffect(() => {
+    if (user && user.name) {
+      setWelcomeMessage(`Welcome back, ${user.name}!`);
+    } else {
+      setWelcomeMessage('Welcome to InstantExplore!');
+    }
+  }, [user]);
+
+  const handleRedirect = useCallback(() => {
+    navigate('/cities');
+  }, [navigate]);
+
+  const handleVideoLoad = useCallback(() => {
     setIsVideoLoaded(true);
-  };
+  }, []);
 
   return (
     <div className="video-container">

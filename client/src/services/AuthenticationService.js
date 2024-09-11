@@ -2,6 +2,7 @@ import{RegisterUser,ValidateUser} from './userServices';
 
 export const logIn = async (userData) => {
     const response = await ValidateUser(userData);
+    localStorage.setItem('token', response.token);
     return response;
 };
 
@@ -18,6 +19,6 @@ export const getToken = () => {
   return localStorage.getItem('token');
 };
 
-export const signOut = () => {
+export const logOut = () => {
   localStorage.removeItem('token');
 };
