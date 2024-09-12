@@ -12,7 +12,7 @@ const LogIn = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user, updateUser } = useUser();  // Correct usage of useUser hook
+  const {  updateUser } = useUser();  // Correct usage of useUser hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();

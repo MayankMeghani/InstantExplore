@@ -14,18 +14,30 @@ const getCities = async () => {
     return response.data;
   };
   
-  const createCity = async (cityData) => {
-    const response = await api.post('/cities', cityData);
+  const createCity = async (cityData,token) => {
+    const response = await api.post('/cities', cityData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   };
   
-  const updateCity = async (id, cityData) => {
-    const response = await api.put(`/cities/${id}`, cityData);
+  const updateCity = async (id, cityData,token) => {
+    const response = await api.put(`/cities/${id}`, cityData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   };
   
-  const deleteCity = async (id) => {
-    const response = await api.delete(`/cities/${id}`);
+  const deleteCity = async (id,token) => {
+    const response = await api.delete(`/cities/${id}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   };
   

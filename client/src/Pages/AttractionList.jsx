@@ -10,6 +10,8 @@ import './Styles/CityList.css';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Search from '../components/Search';
+import {useUser} from '../hooks/userContext';
+
 const AttractionList = () => {
   const { cityId } = useParams();
   const [attractions, setAttractions] = useState([]);
@@ -21,7 +23,7 @@ const AttractionList = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const {user} = useUser();
 
   useEffect(() => {
     console.log(`Fetching attractions for city with ID: ${cityId}`);
@@ -29,7 +31,7 @@ const AttractionList = () => {
       try {
         const data = await getCityAttractions(cityId);
         setAttractions(data);
-        const user = JSON.parse(sessionStorage.getItem('user'));
+
         setIsAdmin(user?.isAdmin || false);
 
         setLoading(false);
@@ -39,7 +41,7 @@ const AttractionList = () => {
     };
 
     fetchAttractions();
-  }, [cityId]);
+  }, [cityId,user]);
 
   const handleButtonClick = () => {
     setFormMode('add');
@@ -62,7 +64,7 @@ const AttractionList = () => {
 
   const handleRemoveClick = async (Id) => {
     try {
-      await deleteAttraction(Id);
+      await deleteAttraction(Id,user.token);
       setAttractions(attractions.filter(attraction => attraction._id !== Id));
     } catch (error) {
       console.error('Error removing attraction:', error);
@@ -85,10 +87,11 @@ const AttractionList = () => {
   const handleFormSubmit = async (attractionData) => {
     try {
       if (formMode === 'add') {
-        const newAttraction = await createAttraction(attractionData);
+        const newAttraction = await createAttraction(attractionData,user.token);
+        console.log(newAttraction);
         setAttractions([...attractions, newAttraction]);
       } else if (formMode === 'update') {
-        await updateAttraction(selectedAttraction._id, attractionData);
+        await updateAttraction(selectedAttraction._id, attractionData,user.token);
         setAttractions(attractions.map(attraction =>
           attraction._id === selectedAttraction._id ? { ...attraction, ...attractionData } : attraction
         ));

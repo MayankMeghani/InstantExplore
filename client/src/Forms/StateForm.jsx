@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CountryForm from './CountryForm';  
 import { getCountries,createCountry } from '../services/stateService';
-
+import { useUser } from '../hooks/userContext';
 const StateForm = ({ onSubmit, onCancel ,error}) => {
   const [stateName, setStateName] = useState('');
   const [country, setCountry] = useState('');
@@ -9,7 +9,7 @@ const StateForm = ({ onSubmit, onCancel ,error}) => {
   const [showCountryForm, setShowCountryForm] = useState(false);
   const [formError, setFormError] = useState(null);
   const [message, setMessage] = useState(null);
-
+  const {user} = useUser();
   useEffect(() => {
     fetchCountries();
   }, []);
@@ -34,7 +34,7 @@ const StateForm = ({ onSubmit, onCancel ,error}) => {
   const handleCountryFormSubmit = async (newCountry) => {
     try {
       setMessage(null);
-      const response = await createCountry(newCountry);
+      const response = await createCountry(newCountry,user.token);
       setMessage("New Country added successfully");
       setCountries([...countries, response]);
       setCountry(response._id);

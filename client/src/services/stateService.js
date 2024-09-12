@@ -5,8 +5,12 @@ const getStates = async () => {
     return response.data;
   };
 
-  const createState = async (stateData) => {
-    const response = await api.post('/states', stateData);
+  const createState = async (stateData,token) => {
+    const response = await api.post('/states', stateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   }
 
@@ -19,8 +23,12 @@ const getCountries= async () => {
     }
 }
 
-const createCountry = async( country) => {
-    const response= await api.post("/countries", country);
+const createCountry = async(country,token) => {
+    const response= await api.post("/countries", country, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
      return response.data;
 }
 

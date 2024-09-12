@@ -10,7 +10,7 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
   const [city, setCity] = useState('');
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
-  const [imageUrls, setImageUrls] = useState('');
+  const [imageUrls, setImageUrls] = useState(null);
   const [cities, setCities] = useState([]);
 
   useEffect(() => {

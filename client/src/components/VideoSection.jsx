@@ -3,7 +3,7 @@ import './Styles/VideoSection.css';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../hooks/userContext';
 
-const VideoSection = () => {
+const VideoSection = ({onLoad}) => {
   const navigate = useNavigate();
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState('Welcome to InstantExplore!');
@@ -11,6 +11,7 @@ const VideoSection = () => {
 
   useEffect(() => {
     if (user && user.name) {
+      console.log(user);
       setWelcomeMessage(`Welcome back, ${user.name}!`);
     } else {
       setWelcomeMessage('Welcome to InstantExplore!');
@@ -23,18 +24,11 @@ const VideoSection = () => {
 
   const handleVideoLoad = useCallback(() => {
     setIsVideoLoaded(true);
-  }, []);
+    onLoad(true);
+  }, [onLoad]);
 
   return (
     <div className="video-container">
-      {!isVideoLoaded && (
-        <div className="placeholder-image">
-          <img
-            src="https://firebasestorage.googleapis.com/v0/b/instantexplore.appspot.com/o/Background%2FScreenshot%20(27).png?alt=media&token=6e39dc98-10b0-4b1b-8e0b-50026b045cfd"
-            alt="Placeholder"
-          />
-        </div>
-      )}
       <video
         autoPlay
         muted
@@ -48,12 +42,14 @@ const VideoSection = () => {
         />
         Your browser does not support the video tag.
       </video>
-      <div className="overlay-content">
-        <p>{welcomeMessage}</p>
-        <h1>Explore the World</h1>
-        <p>Your adventure starts here. Find the best experiences and activities.</p>
-        <button onClick={handleRedirect}>Discover More</button>
-      </div>
+      {isVideoLoaded &&
+            <div className="overlay-content">
+            <p>{welcomeMessage}</p>
+            <h1>Explore the World</h1>
+            <p>Your adventure starts here. Find the best experiences and activities.</p>
+            <button onClick={handleRedirect}>Discover More</button>
+          </div>
+    }
     </div>
   );
 };

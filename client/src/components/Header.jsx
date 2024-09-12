@@ -9,8 +9,8 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
-  const { user, updateUser } = useUser();  // Correctly destructure user and updateUser
-  
+  const { user, updateUser } = useUser(); 
+
   useEffect(() => {
     setIsLoggedIn(!!user);
   }, [user]);

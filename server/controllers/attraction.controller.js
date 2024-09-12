@@ -36,7 +36,7 @@ const getAttraction = async (req, res) => {
 const createAttraction = async (req, res) => {
     try {
       const { name, city } = req.body;
-  
+        
       // Check if the city exists
       const cityData = await City.findById(city);
       if (!cityData) return res.status(404).json({ message: "City not found" });

@@ -3,6 +3,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../api/firebase';
 import StateForm from './StateForm';
 import {getStates,createState} from '../services/stateService.js';
+import {useUser} from '../hooks/userContext.js';
 
 const CityForm = ({ initialData, onSubmit, mode, error }) => {
   const [name, setName] = useState('');
@@ -12,6 +13,7 @@ const CityForm = ({ initialData, onSubmit, mode, error }) => {
   const [showStateForm, setShowStateForm] = useState(false);
   const [formError, setFormError] = useState(null);
   const [message, setMessage] = useState(null);
+  const {user} = useUser();
   useEffect(() => {
     const fetchStates = async () => {
       try {
@@ -50,7 +52,7 @@ const handleAddState = () => {
 };
 const handleStateFormSubmit = async (newState) => {
   try {
-    const response = await createState(newState);
+    const response = await createState(newState,user.token);
     setShowStateForm(false);
     setStates([...states, response]); 
     setMessage('New state added successfully');

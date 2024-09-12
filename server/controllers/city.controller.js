@@ -42,19 +42,16 @@ const createCity = async (req, res) => {
   try {
     const { name, state, images } = req.body;
 
-    // Check if the state exists
     const existingState = await State.findById(state);
     if (!existingState) {
       return res.status(400).json({ message: 'Invalid State ID' });
     }
 
-    // Check if the city with the same name and state ID already exists
     const existingCity = await City.findOne({ name, state });
     if (existingCity) {
       return res.status(400).json({ message: 'City with the same name and state already exists' });
     }
 
-    // Create the new city
     const city = new City({ name, state, images });
     await city.save();
     

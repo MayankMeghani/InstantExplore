@@ -1,5 +1,5 @@
 import{RegisterUser,ValidateUser} from './userServices';
-
+import api from '../api/api';
 export const logIn = async (userData) => {
     const response = await ValidateUser(userData);
     localStorage.setItem('token', response.token);
@@ -11,8 +11,14 @@ export const signUp = async (userData) => {
   return response;
 };
 
-export const isAuthenticated = () => {
-  return !!localStorage.getItem('token');
+export const isValidToken = async(token) => {
+  try{
+  const response = await api.post('/valid',token);
+  return response.data;
+  }
+  catch(error){
+    // console.error('Error validating token:', error);
+  }
 };
 
 export const getToken = () => {
