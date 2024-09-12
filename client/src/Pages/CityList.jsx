@@ -8,6 +8,7 @@ import CityForm from '../Forms/CityForm';
 import './Styles/Modal.css';
 import Search from '../components/Search';
 import Header from '../components/Header';
+import {useUser} from '../hooks/userContext';
 
 const CityList = () => {
   const [cities, setCities] = useState([]);
@@ -18,7 +19,9 @@ const CityList = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [formError, setFormError] = useState(null);
   const navigate = useNavigate();
+  const {user} = useUser();
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -26,7 +29,6 @@ const CityList = () => {
         const response = await getCities();
         setCities(response);
 
-        const user = JSON.parse(sessionStorage.getItem('user'));
         setIsAdmin(user?.isAdmin || false);
 
         
@@ -38,7 +40,7 @@ const CityList = () => {
     };
 
     fetchCities();
-  }, []);
+  }, [user]);
 
   const handleButtonClick = () => {
     setFormMode('add');
@@ -61,7 +63,7 @@ const CityList = () => {
 
   const handleRemoveClick = async (cityId) => {
     try {
-      await deleteCity(cityId);
+      await deleteCity(cityId,user.token);
       setCities(cities.filter(city => city._id !== cityId));
     } catch (error) {
       console.error('Error removing city:', error);
@@ -82,10 +84,10 @@ const CityList = () => {
   const handleFormSubmit = async (cityData) => {
     try {
       if (formMode === 'add') {
-        const newCity = await createCity(cityData);
+        const newCity = await createCity(cityData,user.token);
         setCities([...cities, newCity]);
       } else if (formMode === 'update') {
-        await updateCity(selectedCity._id, cityData);
+        await updateCity(selectedCity._id, cityData,user.token);
         setCities(cities.map(city =>
           city._id === selectedCity._id ? { ...city, ...cityData } : city
         ));
@@ -93,6 +95,7 @@ const CityList = () => {
       setShowForm(false);
       setSelectedCity(null);
     } catch (error) {
+      setFormError(error.response?.data?.message);
       console.error('Error submitting form:', error);
     }
   };
@@ -114,7 +117,7 @@ const CityList = () => {
       <Search onSearch={handleSearch} />
       
       <div className="cards"> 
-        {filteredCities.map((city) => (
+        {filteredCities.length > 0 ? (filteredCities.map((city) => (
           <Card
             key={city._id}
             Id={city._id}
@@ -127,7 +130,9 @@ const CityList = () => {
             isAdmin={isAdmin}
 
           />
-        ))}
+        ))) : (
+          <div>No City found.</div>  
+        )}
       </div>
       <div>
         {isAdmin && (
@@ -148,6 +153,7 @@ const CityList = () => {
                 initialData={selectedCity}
                 onSubmit={handleFormSubmit}
                 mode={formMode}
+                error={formError}
               />
             </div>
           </div>

@@ -11,7 +11,6 @@ import countryRoute from './router/country.routes.js';
 import userRoute from './router/user.routes.js';
 import reviewRoute from './router/review.routes.js';
 import cors from 'cors';
-
 const app = express();
 
 const port = process.env.PORT || 5005;
@@ -27,7 +26,7 @@ app.use("/attractions", attractionRoute);
 app.use("/states", stateRoute);
 app.use("/countries", countryRoute);
 app.use("/users", userRoute);
-app.use("/reviews", reviewRoute);
+app.use("/reviews",reviewRoute);
 
 app.listen(port, () => 
     console.log(`Server running on port ${port}`));

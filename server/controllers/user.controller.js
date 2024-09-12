@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
 import Review from "../models/Review.js";
+import jwt from 'jsonwebtoken';
+
 const getUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json(users);
@@ -54,6 +56,25 @@ const validateUser = async (req, res) => {
     res.status(200).json({ user: { _id: user.id,name: user.name, email: user.email, isAdmin:user.isAdmin }, message: "User authenticated successfully" });
 }
 
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user by email
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ message: 'User not found' });
+
+  // Compare password
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+
+  // Generate JWT
+  const token = jwt.sign({ _id: user.id,name: user.name, email: user.email, isAdmin:user.isAdmin }, 'yourSecretKey', { expiresIn: '1h' });
+
+  // Send token as response
+  res.json({ message: "User authenticated successfully",  token });
+};
+
+
 const getReviews = async (req, res) => {
   const userId = req.params.userId; 
   try {
@@ -69,4 +90,24 @@ const getReviews = async (req, res) => {
 };
 
 
-export {getUsers,getUser,createUser, updateUser, deleteUser,validateUser,getReviews};
+const isValidToken = async (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ error: 'Token is required' });
+  }
+
+  try {
+    // Replace 'yourSecretKey' with your actual JWT secret key
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'yourSecretKey');
+    
+    // You can now access user information from the decoded token
+    // For example: decoded.userId, decoded.email, etc.
+    
+    return res.status(200).json({ success: true, user: decoded });
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+};
+
+export {getUsers,getUser,createUser, updateUser, deleteUser,validateUser,getReviews,login,isValidToken};

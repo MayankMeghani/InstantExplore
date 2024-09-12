@@ -6,7 +6,7 @@ const RegisterUser = async(userData)=>{
 };
 
 const ValidateUser = async(userData)=>{
-    const response = await api.post('/users/validate', userData);
+    const response = await api.post('/users/login', userData);
     return response.data;
 };
 

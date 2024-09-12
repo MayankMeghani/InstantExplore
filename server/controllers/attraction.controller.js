@@ -34,15 +34,34 @@ const getAttraction = async (req, res) => {
 }
 
 const createAttraction = async (req, res) => {
-    const { name, city } = req.body;
-    const cityData = await City.findById(city);
-    if (!cityData) return res.status(404).json({ message: "City not found" });
-    const attraction = new Attraction(req.body);
-    await attraction.save();
-    cityData.attractions.push(attraction._id);
-    await cityData.save();  
-    res.status(201).json(attraction);
-}
+    try {
+      const { name, city } = req.body;
+        
+      // Check if the city exists
+      const cityData = await City.findById(city);
+      if (!cityData) return res.status(404).json({ message: "City not found" });
+  
+      // Check if an attraction with the same name already exists in the city
+      const existingAttraction = await Attraction.findOne({ name, city });
+      if (existingAttraction) {
+        return res.status(400).json({ message: "Attraction with this name already exists in the city" });
+      }
+  
+      // Create and save the new attraction
+      const attraction = new Attraction(req.body);
+      await attraction.save();
+  
+      // Add the attraction to the city's list of attractions
+      cityData.attractions.push(attraction._id);
+      await cityData.save();
+  
+      res.status(201).json(attraction);
+    } catch (error) {
+      // Handle errors
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
 
 const updateAttraction = async (req, res) => {
     try {

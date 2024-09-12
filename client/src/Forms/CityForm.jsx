@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api/api';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from '../api/firebase';
+import StateForm from './StateForm';
+import {getStates,createState} from '../services/stateService.js';
+import {useUser} from '../hooks/userContext.js';
 
-const CityForm = ({ initialData, onSubmit, mode }) => {
+const CityForm = ({ initialData, onSubmit, mode, error }) => {
   const [name, setName] = useState('');
   const [state, setState] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState(null);
   const [states, setStates] = useState([]);
-
+  const [showStateForm, setShowStateForm] = useState(false);
+  const [formError, setFormError] = useState(null);
+  const [message, setMessage] = useState(null);
+  const {user} = useUser();
   useEffect(() => {
     const fetchStates = async () => {
       try {
-        const response = await api.get(`/states`);
-        setStates(response.data);
+        const response = await getStates();
+        setStates(response);
       } catch (error) {
         console.error('Error fetching states:', error);
       }
@@ -42,6 +47,21 @@ const CityForm = ({ initialData, onSubmit, mode }) => {
     }
   };
 
+const handleAddState = () => {
+  setShowStateForm(true);
+};
+const handleStateFormSubmit = async (newState) => {
+  try {
+    const response = await createState(newState,user.token);
+    setShowStateForm(false);
+    setStates([...states, response]); 
+    setMessage('New state added successfully');
+  } catch (error) {
+    console.error('Error adding new state:', error);
+    setFormError(error.response?.data?.message);
+  }
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -52,15 +72,18 @@ const CityForm = ({ initialData, onSubmit, mode }) => {
     };
 
     try {
+      setMessage(null);
       console.log('City data:', cityData);
       onSubmit(cityData);
-      alert(`City ${mode === 'add' ? 'added' : 'updated'} successfully!`);
     } catch (error) {
       console.error(`Error ${mode === 'add' ? 'adding' : 'updating'} city:`, error);
     }
   };
 
   return (
+    <> 
+       {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>} 
+        {message && <div style={{ color: 'green', marginTop: '10px' }}>{message}</div>}
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="name">City Name:</label>
@@ -83,10 +106,11 @@ const CityForm = ({ initialData, onSubmit, mode }) => {
           <option value="">Select a state</option>
           {states.map((stateOption) => (
             <option key={stateOption._id} value={stateOption._id}>
-              {stateOption.name}
+              {stateOption.name},{stateOption.country.name}
             </option>
           ))}
         </select>
+        <button type="button" onClick={handleAddState}>Add New State</button>
       </div>
       <div>
         <label htmlFor="image">City Image:</label>
@@ -98,8 +122,12 @@ const CityForm = ({ initialData, onSubmit, mode }) => {
         />
         {imageUrl && <img src={imageUrl} alt="City" style={{maxWidth: '200px', marginTop: '10px'}} />}
       </div>
-      <button type="submit">{mode === 'add' ? 'Add City' : 'Update City'}</button>
+      <button type="submit" disabled={!imageUrl}>{mode === 'add' ? 'Add City' : 'Update City'}</button>
     </form>
+    {showStateForm && (
+        <StateForm onSubmit={handleStateFormSubmit} onCancel={() => setShowStateForm(false)} error={formError} />
+      )}
+    </>
   );
 };
 

@@ -3,13 +3,14 @@ import { useParams } from 'react-router-dom'; // Assuming you're passing the ID 
 import Attraction from '../components/Attraction';
 import { getAttraction } from '../services/attractionService';
 import Header from '../components/Header';
+import {useUser} from '../hooks/userContext';
 const AttractionPage = () => {
   const { attractionId } = useParams(); // Get the attraction ID from the URL
   const [attractionData, setAttractionData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
-
+  const [User, setUser] = useState(null);
+  const {user} = useUser();
   useEffect(() => {
     const fetchAttraction = async () => {
       try {
@@ -17,14 +18,14 @@ const AttractionPage = () => {
         console.log('Fetched attraction:', data); 
         setAttractionData(data);
         
-        const user = JSON.parse(sessionStorage.getItem('user'));
         if(user){
         setUser(
           {
             _id:user._id,
             name:user.name,
             email:user.email,
-            role:(user.isAdmin)?"Admin":"User"
+            role:(user.isAdmin)?"Admin":"User",
+            token: user.token
           }
         )
         }else{
@@ -38,10 +39,10 @@ const AttractionPage = () => {
         setError(err.message);
         setLoading(false);
       }
-    };
+    };  
 
     fetchAttraction();
-  }, [attractionId]);
+  }, [attractionId,user]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -49,7 +50,8 @@ const AttractionPage = () => {
   return(
     <>
     <Header/>
-    <Attraction attraction={attractionData} user={user} />
+    <Attraction initialAttraction={attractionData} user={User} />
+    
     </>
   );
 };
