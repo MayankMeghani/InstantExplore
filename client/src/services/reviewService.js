@@ -28,4 +28,19 @@ const createReview = async (Review,token) => {
     return response.data;
   };  
 
-  export { createReview, updateReview, deleteReview };
+  const updateLike = async (id,likeStatus,user)=>{
+    const response = await api.post(`/reviews/${id}/like`, 
+      {
+        likeStatus: likeStatus,
+        userId: user._id
+      },
+      {
+        headers: { 
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+    );
+    return response.data;
+  }
+
+  export { createReview, updateReview, deleteReview,updateLike };

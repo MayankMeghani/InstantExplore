@@ -47,8 +47,19 @@ const updateState = async (req, res) => {
 }
 
 const deleteState = async (req, res) => {
-    const state = await State.findByIdAndDelete(req.params.id);
-    if (!state) return res.status(404).json({ message: "State not found" });
-    res.status(204).json(state);
+    const stateId = req.params.id;
+    const cities = await City.find({ state: stateId });
+    
+    for (let city of cities) {
+      // Delete all attractions related to the city
+      await Attraction.deleteMany({ _id: { $in: city.attractions } });
+      
+      // Delete the city
+      await City.findByIdAndDelete(city._id);
+    }
+    
+    // Finally, delete the state
+    await State.findByIdAndDelete(stateId);
+    res.status(204).json("State and all dependent cities and attractions deleted.");
 }
 export {getStates,getState,createState, updateState, deleteState};

@@ -45,6 +45,7 @@ const ReviewList = () => {
   const handleSubmitReview = async (review) => {
     try {
       if (reviewToEdit) {
+        console.log(reviewToEdit);
         const updatedReview = await updateReview(reviewToEdit._id, review, user.token);
         console.log('Review updated:', updatedReview);
       } else {

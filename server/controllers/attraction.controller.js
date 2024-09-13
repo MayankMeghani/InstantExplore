@@ -19,9 +19,9 @@ const getAttraction = async (req, res) => {
         const attraction = await Attraction.findById(req.params.id)
         .populate({
           path: 'reviews', // Populating reviews
-          populate: {
-            path: 'user',  // Nested population: populating the user within each review
-          }
+        //   populate: {
+        //     path: 'user',  
+        //   }
         });
       
         if (!attraction) return res.status(404).json({ message: "Attraction not found" });

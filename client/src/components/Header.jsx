@@ -56,9 +56,11 @@ const Header = () => {
             <Link to="/cities" className="nav-link">
               Cities
             </Link>
+            {!user.isAdmin &&
             <Link to="/Reviews" className="nav-link">
               My Reviews
             </Link>
+            }
             <button onClick={handleLogout} className="nav-link logout-button">
               Log-out
             </button>
