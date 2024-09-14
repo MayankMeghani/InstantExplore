@@ -1,6 +1,6 @@
 import Attraction from "../models/Attraction.js";
 import City from "../models/City.js";
-
+import Review from "../models/Review.js";
 const getAttractions = async (req, res) => {
     try {
         const attractions = await Attraction.find({});
@@ -18,12 +18,12 @@ const getAttraction = async (req, res) => {
     try {
         const attraction = await Attraction.findById(req.params.id)
         .populate({
-          path: 'reviews', // Populating reviews
-        //   populate: {
-        //     path: 'user',  
-        //   }
+          path: 'reviews',
+          populate: {
+            path: 'user',
+            select: 'name' 
+          } 
         });
-      
         if (!attraction) return res.status(404).json({ message: "Attraction not found" });
         await attraction.calculateAverageRating();
         await attraction.save();

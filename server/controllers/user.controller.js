@@ -79,7 +79,9 @@ const getReviews = async (req, res) => {
   const userId = req.params.userId; 
   try {
     const reviews = await Review.find({ user: userId })
-    .populate({ path: 'attraction', select: 'name' }); // Populate only the name field of the attraction
+    .populate({ path: 'attraction', select: 'name' })
+    .populate({path: 'user'}); // Populate only the name field of the attraction
+    console.log(reviews);
     if (!reviews) {
       return res.status(404).json({ message: "Reviews not found" });
     }

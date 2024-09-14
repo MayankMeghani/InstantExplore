@@ -11,7 +11,6 @@ const VideoSection = ({onLoad}) => {
 
   useEffect(() => {
     if (user && user.name) {
-      console.log(user);
       setWelcomeMessage(`Welcome back, ${user.name}!`);
     } else {
       setWelcomeMessage('Welcome to InstantExplore!');
@@ -19,7 +18,7 @@ const VideoSection = ({onLoad}) => {
   }, [user]);
 
   const handleRedirect = useCallback(() => {
-    navigate('/cities');
+    navigate('/trendings');
   }, [navigate]);
 
   const handleVideoLoad = useCallback(() => {

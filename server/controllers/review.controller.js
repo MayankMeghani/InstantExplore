@@ -4,7 +4,10 @@ import User from "../models/User.js";
 
 const getReviews = async (req, res) => {
     try {
-        const reviews = await Review.find({}).populate('attraction','name');
+        const reviews = await Review.find({}) .populate({
+          path: 'attraction', 
+          select: 'name location'
+      }).populate('user','name');
         res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -129,8 +132,8 @@ const addLike = async (req, res) => {
 
     await review.save();
     await user.save();
-  
-    res.status(200).json({ message: 'Success', likeCount: review.likedBy.length });
+
+    res.status(200).json({message: 'Success', likeCount: review.likedBy.length });
   };
   
 

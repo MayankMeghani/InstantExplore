@@ -5,14 +5,13 @@ import { updateLike } from '../services/reviewService';
 import { useUser } from '../hooks/userContext';
 
 const ReviewCard = ({ Id, title, review, modifiable, handleModifyReview, handleRemoveReview }) => {
-  const [showOverlay, setShowOverlay] = useState(false); // To control the visibility of the overlay
-  const [currentImageIndex, setCurrentImageIndex] = useState(0); // To track the image in the overlay
-  const [liked, setLiked] = useState(null); // To track whether the user liked or unliked the review
-  const [likeCount, setLikeCount] = useState(review.likedBy.length); // Track like count
-  const [unlikeCount, setUnlikeCount] = useState(review.unlikedBy.length); // Track unlike count
-  const { user } = useUser(); // Get the current user
+  const [showOverlay, setShowOverlay] = useState(false); 
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); 
+  const [liked, setLiked] = useState(null); 
+  const [likeCount, setLikeCount] = useState(review.likedBy.length); 
+  const [unlikeCount, setUnlikeCount] = useState(review.unlikedBy.length); 
+  const { user } = useUser(); 
 
-  // Initialize the `liked` state based on the current user's actions
   useEffect(() => {
     if (user) {
       if (review.likedBy.includes(user._id)) {
@@ -23,9 +22,8 @@ const ReviewCard = ({ Id, title, review, modifiable, handleModifyReview, handleR
         setLiked(null);
       }
     }
-  }, [user, review.likedBy, review.unlikedBy]); // Depend on user and review changes
+  }, [user, review.likedBy, review.unlikedBy]);
 
-    // Function to open the image overlay
     const openOverlay = (index) => {
       setCurrentImageIndex(index);
       setShowOverlay(true);
@@ -159,7 +157,7 @@ const ReviewCard = ({ Id, title, review, modifiable, handleModifyReview, handleR
       )}
 
       <div className="review-actions">
-        {user && !user.isAdmin && review.user !== user._id ? (
+        {user && !user.isAdmin && review.user?._id !== user._id ? (
           <>
             <button
               className={`like-btn ${liked === 'like' ? 'active' : ''}`}

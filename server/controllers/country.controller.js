@@ -1,5 +1,8 @@
 import Country from "../models/Country.js";
 import State from "../models/State.js";
+import City from "../models/City.js";
+import Attraction from "../models/Attraction.js";
+
 const getCountries = async (req, res) => {
     const countries = await Country.find();
     if(!countries)res.status(404);
@@ -68,4 +71,18 @@ const deleteCountry = async (req, res) => {
 
     res.status(204).json({message: "Country deleted successfully" });
 }
-export {getCountries,getCountry,createCountry, updateCountry, deleteCountry};
+
+const getCountryStates = async (req, res) => {
+  const id = req.params.id;
+  const states = await State.find({ country: id });
+  if (!states || states.length === 0) {
+    return res.status(404).json({ message: "No states found for this country." });
+  }
+
+  // Return the list of states
+  res.status(200).json(states);
+
+}
+
+
+export {getCountries,getCountry,createCountry, updateCountry, deleteCountry ,getCountryStates};

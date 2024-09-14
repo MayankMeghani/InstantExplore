@@ -1,5 +1,7 @@
 import State from "../models/State.js";
 import Country from "../models/Country.js";
+import City from "../models/City.js";
+import Attraction from "../models/Attraction.js";
 
 const getStates = async (req, res) => {
     const cities = await State.find().populate('country');
@@ -48,6 +50,7 @@ const updateState = async (req, res) => {
 
 const deleteState = async (req, res) => {
     const stateId = req.params.id;
+
     const cities = await City.find({ state: stateId });
     
     for (let city of cities) {
@@ -61,5 +64,5 @@ const deleteState = async (req, res) => {
     // Finally, delete the state
     await State.findByIdAndDelete(stateId);
     res.status(204).json("State and all dependent cities and attractions deleted.");
-}
+  }
 export {getStates,getState,createState, updateState, deleteState};
