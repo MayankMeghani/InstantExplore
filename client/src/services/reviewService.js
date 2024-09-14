@@ -1,7 +1,16 @@
 import api from "../api/api";
 
+
+const getReviews = async () => {
+  try {
+    const response = await api.get(`/reviews`);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getReviews:', error);
+    throw error;
+  }
+};
 const createReview = async (Review,token) => {
-  console.log(token);
     const response = await api.post(`/reviews`,Review, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -28,4 +37,20 @@ const createReview = async (Review,token) => {
     return response.data;
   };  
 
-  export { createReview, updateReview, deleteReview };
+  const updateLike = async (id,likeStatus,user)=>{
+    const response = await api.post(`/reviews/${id}/like`, 
+      {
+        likeStatus: likeStatus,
+        userId: user._id
+      },
+      {
+        headers: { 
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+    );
+    return response.data;
+
+  }
+
+  export { getReviews,createReview, updateReview, deleteReview,updateLike };

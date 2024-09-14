@@ -11,6 +11,8 @@ import AttractionPage from './Pages/AttractionPage';
 import ReviewList from './Pages/ReviewList';
 import Login from './Forms/LogIn';
 import SignUp from './Forms/SignUp';
+import AdminPanel from './Pages/AdminPanel';
+import TrendingReviewPage from './Pages/TrendingReviewPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,6 +25,8 @@ root.render(
           <Route path="/cities/:cityId/attractions" element={<AttractionList />} />
           <Route path="/cities/:cityId/attractions/:attractionId" element={<AttractionPage />} />
           <Route path="/Reviews" element={<ReviewList />} />
+          <Route path="/Panel" element={<AdminPanel />} />
+          <Route path="/trendings" element={<TrendingReviewPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
         </Routes>

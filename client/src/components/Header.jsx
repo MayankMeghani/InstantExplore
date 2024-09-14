@@ -38,7 +38,7 @@ const Header = () => {
           />
           InstantExplore
         </Link>
-
+  
         <Link to="/" className={`nav-link ${isHomePage ? 'active' : ''}`}>
           Home
         </Link>
@@ -56,9 +56,18 @@ const Header = () => {
             <Link to="/cities" className="nav-link">
               Cities
             </Link>
-            <Link to="/Reviews" className="nav-link">
-              My Reviews
-            </Link>
+            {/* Show My Reviews only for non-admin users */}
+            {!user.isAdmin && (
+              <Link to="/reviews" className="nav-link">
+                My Reviews
+              </Link>
+            )}
+            {/* Show Admin Panel only for admin users */}
+            {user.isAdmin && (
+              <Link to="/panel" className="nav-link">
+                Admin Panel
+              </Link>
+            )}
             <button onClick={handleLogout} className="nav-link logout-button">
               Log-out
             </button>
@@ -67,6 +76,7 @@ const Header = () => {
       </div>
     </header>
   );
+  
 };
 
 export default Header;

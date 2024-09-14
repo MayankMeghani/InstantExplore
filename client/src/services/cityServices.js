@@ -44,4 +44,4 @@ const getCities = async () => {
 
 
 
-  export { getCities, getCity, createCity, updateCity, deleteCity,getCityAttractions };
+  export { getCities, getCity, createCity, updateCity, deleteCity, getCityAttractions };

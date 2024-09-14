@@ -14,6 +14,26 @@ const getStates = async () => {
     return response.data;
   }
 
+  const updateState = async (id, stateData,token) => {
+    const response = await api.put(`/states/${id}`, stateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }
+
+  const deleteState = async (id,token) => {
+    const response = await api.delete(`/states/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }
+
+
+
 const getCountries= async () => {
     try {
         const response = await api.get("/countries");
@@ -32,4 +52,27 @@ const createCountry = async(country,token) => {
      return response.data;
 }
 
-export {getStates,createState,getCountries, createCountry};
+const updateCountry = async(id,country,token) => {
+  const response= await api.put(`/countries/${id}`, country, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+     return response.data;
+}
+
+const deleteCountry = async(id,token) => {
+  const response= await api.delete(`/countries/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+     return response.data;
+}
+
+const getCountryStates = async(countryId)=>{
+  const response= await api.get(`/countries/${countryId}/states`);
+  return response.data;
+}
+
+export { getStates, createState, updateState, deleteState, getCountries, createCountry, updateCountry, deleteCountry,getCountryStates };

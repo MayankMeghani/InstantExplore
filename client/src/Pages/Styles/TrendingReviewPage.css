@@ -1,0 +1,159 @@
+.trending-reviews {
+  margin: 50px auto; /* Adjust based on your header's height */
+  max-width: 600px;
+  padding: 20px;
+}
+
+
+.sort-button {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.review-header {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.review-rating {
+  display: flex;
+}
+
+.attraction-info {
+  padding: 12px;
+  background-color: #f9f9f9;
+}
+
+.attraction-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.attraction-location {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0 0;
+}
+
+.image-grid {
+  display: grid;
+  gap: 2px;
+  position: relative;
+}
+
+/* Grid behavior for 1, 2, or 3 images */
+.grid-1 {
+  grid-template-columns: 1fr;
+}
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid-3 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.grid-3 img:nth-child(1) {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Style for individual images */
+.review-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  position: relative;
+}
+
+/* When there are more than 3 images, the overlay should appear on the 3rd image */
+.has-overlay {
+  position: relative;
+}
+
+/* Overlay style */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Make sure the overlay text is centered */
+.more-overlay {
+  position: absolute;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.review-text {
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.review-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+}
+
+.action-button:hover {
+  color: #007bff;
+}

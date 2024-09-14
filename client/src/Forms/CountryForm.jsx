@@ -23,7 +23,9 @@ const CountryForm = ({ onSubmit, onCancel,error }) => {
         />
       </div>
       <button type="submit">Add Country</button>
+      {oncancel &&
       <button type="button" onClick={onCancel}>Cancel</button>
+      }
     </form>
     </>
   );
