@@ -1,0 +1,20 @@
+.review {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 800px;
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+  
+  .reviewer-name {
+    font-weight: bold;
+  }
+  
+  .review-text {
+    font-style: italic;
+  }

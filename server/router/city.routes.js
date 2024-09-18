@@ -1,16 +1,12 @@
 import { Router } from "express";
 const router = Router();
 import { getCities, getCity, createCity, updateCity, deleteCity,getCityAttractions } from "../controllers/city.controller.js";
+import authMiddleware from "./authMiddleware.js"; 
+  router.get("/",getCities).get("/:id",getCity);
 
-router.route("/")
-  .get(getCities) 
-  .post(createCity); 
+  router.post("/",authMiddleware,createCity); 
 
-router.route("/:id")
-  .get(getCity) 
-  .put(updateCity) 
-  .delete(deleteCity); 
+  router.put("/:id",authMiddleware,updateCity).delete("/:id",authMiddleware,deleteCity);
 
-  router.route("/:id/attractions")
-  .get(getCityAttractions);
+  router.route("/:id/attractions").get(getCityAttractions);
 export default router;
