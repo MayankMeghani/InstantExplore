@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Star, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useUser } from '../hooks/userContext';
 import { updateLike } from '../services/reviewService';
-const TrendingReviewCard = ({ index, review }) => {
+const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
     const [showOverlay, setShowOverlay] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [liked, setLiked] = useState(null);
@@ -78,7 +78,6 @@ const TrendingReviewCard = ({ index, review }) => {
             if (liked === 'like') setLikeCount(likeCount + 1);
         }
     };
-
 
 
 
@@ -198,6 +197,14 @@ const TrendingReviewCard = ({ index, review }) => {
                         <span className="unlike-count"><ThumbsDown size={16} /> {unlikeCount} Unlike</span>
                     </>
                 )}
+                {user.isAdmin &&
+                    <button
+                    className="remove-review-btn"
+                    onClick={() => handleRemoveReview(review._id)}
+                    >
+                    Remove
+                  </button>
+                }
             </div>
         </div>);
 }

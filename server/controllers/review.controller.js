@@ -25,7 +25,6 @@ const getReview = async(req, res) =>{
 };
 const createReview = async (req, res) => {
     try {
-      console.log(req.body);
       
       const existingAttraction = await Attraction.findById(req.body.attraction);
       if (!existingAttraction) {
@@ -42,16 +41,13 @@ const createReview = async (req, res) => {
         return res.status(400).json({ message: 'User has already reviewed this attraction' });
       }
   
-      // Create a new review
       const newReview = new Review(req.body);
       await newReview.save();
   
-      // Add the review to the attraction's reviews array and recalculate rating
       existingAttraction.reviews.push(newReview._id);
       await existingAttraction.calculateAverageRating();
       await existingAttraction.save();
   
-      // Add the review to the user's reviews array
       existingUser.reviews.push(newReview._id);
       await existingUser.save();
   

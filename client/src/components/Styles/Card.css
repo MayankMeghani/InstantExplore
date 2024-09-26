@@ -35,7 +35,7 @@
   
   .card-content button {
     padding: 8px 16px;
-    background-color: #007BFF;
+    background-color: firebrick;
     color: white;
     border: none;
     border-radius: 4px;
@@ -43,5 +43,5 @@
   }
   
   .card-content button:hover {
-    background-color: #0056b3;
+    background-color: #7c1818;
   }
