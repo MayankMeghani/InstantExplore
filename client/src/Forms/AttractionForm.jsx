@@ -85,7 +85,9 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
 
   return (
     <>
-    {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>} 
+    {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+    <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+ 
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="name">Attraction Name:</label>
@@ -167,6 +169,7 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
       </div>
       <button type="submit" disabled={!imageUrls} >{mode === 'add' ? 'Add Attraction' : 'Update Attraction'}</button>
     </form>
+    </div>
     </>
   );
 };

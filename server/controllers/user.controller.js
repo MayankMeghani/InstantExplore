@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
 import Review from "../models/Review.js";
 import jwt from 'jsonwebtoken';
-
+import Request from "../models/Request.js";
 const getUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json(users);
@@ -79,7 +79,8 @@ const getReviews = async (req, res) => {
   const userId = req.params.userId; 
   try {
     const reviews = await Review.find({ user: userId })
-    .populate({ path: 'attraction', select: 'name' }); // Populate only the name field of the attraction
+    .populate({ path: 'attraction', select: 'name' })
+    .populate({path: 'user'}); // Populate only the name field of the attraction
     if (!reviews) {
       return res.status(404).json({ message: "Reviews not found" });
     }
@@ -110,4 +111,14 @@ const isValidToken = async (req, res) => {
   }
 };
 
-export {getUsers,getUser,createUser, updateUser, deleteUser,validateUser,getReviews,login,isValidToken};
+const getRequests = async (req, res) => {
+  const userId = req.params.userId; 
+  try {
+    const requests = await Request.find({ user: userId })
+    res.status(200).json(requests);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching requests" });
+  }
+};
+
+export {getUsers,getUser,createUser, updateUser, deleteUser,validateUser,getReviews,getRequests,login,isValidToken};

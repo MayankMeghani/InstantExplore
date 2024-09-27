@@ -20,4 +20,14 @@ const getUserReviews = async(userId)=>{
     }
 }
 
-export {RegisterUser,ValidateUser,getUserReviews};
+const getUserRequests = async(userId)=>{
+    try{
+    const response = await api.get(`/users/requests/${userId}`);
+    
+    return response.data;
+    }
+    catch(error){
+        console.error('Error fetching user requests:', error);
+    }
+}
+export {RegisterUser,ValidateUser,getUserReviews,getUserRequests};

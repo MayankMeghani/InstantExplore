@@ -18,10 +18,16 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  requests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Request',
+  }],
   reviews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Review',
   }],
+  likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }], 
+  unlikedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
 });
 
 const User = mongoose.model('User', userSchema);

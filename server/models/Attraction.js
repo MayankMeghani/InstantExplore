@@ -30,14 +30,6 @@ const attractionSchema = new mongoose.Schema({
     type: Number,
     required: [false, 'Please add a rating'],
   },
-  schedule: {
-    type: Map,
-    of: new mongoose.Schema({
-      openingHours: Date,
-      closingHours: Date,
-    }),
-    required: [false, 'Please add a schedule'],
-  },
   reviews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Review',

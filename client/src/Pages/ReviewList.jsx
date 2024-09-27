@@ -17,13 +17,14 @@ const ReviewList = () => {
   const { user } = useUser();
 
   useEffect(() => {
-    fetchReviews(user._id);
-    setLoading(false);
+    if (user) {
+      fetchReviews(user._id);
+    }
   }, [user]);
 
   const handleClose = () => {
     setShowReviewForm(false);
-    setLoading(false);
+    setReviewToEdit(null);
   };
 
   const handleModifyReview = (reviewId) => {
@@ -48,12 +49,10 @@ const ReviewList = () => {
         const updatedReview = await updateReview(reviewToEdit._id, review, user.token);
         console.log('Review updated:', updatedReview);
       } else {
-        console.log(review);
         const newReview = await createReview(review, user.token);
         console.log('New review created:', newReview);
       }
       setShowReviewForm(false);
-      setReviewToEdit(null);
       fetchReviews(user._id); // Refetch reviews after submission
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -69,8 +68,15 @@ const ReviewList = () => {
   );
 
   const fetchReviews = async (id) => {
-    const data = await getUserReviews(id);
-    setReviews(data);
+    setLoading(true);
+    try {
+      const data = await getUserReviews(id);
+      setReviews(data);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+    } finally {
+      setLoading(false); // Ensure loading state is updated
+    }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -81,10 +87,9 @@ const ReviewList = () => {
         <Header />
         <Search onSearch={handleSearch} />
         {filteredReviews.length > 0 ? (
-          filteredReviews.map((review, index) => (
+          filteredReviews.map((review) => (
             <ReviewCard
-              Id={index}
-              key={index}
+              key={review._id} // Use unique ID for key
               title={review.attraction.name}
               modifiable={true}
               review={review}
@@ -93,7 +98,7 @@ const ReviewList = () => {
             />
           ))
         ) : (
-          <div>No review found.</div>
+          <div>No reviews found.</div>
         )}
       </div>
 
@@ -106,7 +111,6 @@ const ReviewList = () => {
                 &times;
               </button>
             </div>
-            <div className="modal-body"></div>
             <ReviewForm
               attraction={reviewToEdit ? reviewToEdit.attraction._id : null}
               user={user._id}

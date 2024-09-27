@@ -49,19 +49,16 @@ const Attraction = ({ initialAttraction, user }) => {
     }
   };
 
-  // Function to handle review modification (edit)
   const handleModifyReview = (reviewId) => {
     const reviewToModify = attraction.reviews.find(review => review._id === reviewId);
     setReviewToEdit(reviewToModify);
     setShowReviewForm(true);
   };
 
-  // Function to handle review removal (delete)
   const handleRemoveReview = async (reviewId) => {
     try {
       await deleteReview(reviewId, user.token);
       console.log(`Review with ID: ${reviewId} removed`);
-      // Remove the review from the attraction state
       const updatedAttraction = {
         ...attraction,
         reviews: attraction.reviews.filter(review => review._id !== reviewId),

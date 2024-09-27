@@ -21,6 +21,12 @@ const reviewSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  images: [{
+    type: String,
+    required: [true, 'Please add photos'],
+  }],
+  likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  unlikedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
   // date: {
   //   type: Date,
   //   default: Date.now,

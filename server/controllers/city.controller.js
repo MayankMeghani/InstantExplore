@@ -90,7 +90,6 @@ const updateCity = async (req, res) => {
 
 const deleteCity = async (req, res) => {
   try {
-    // Find the city by ID
     const city = await City.findById(req.params.id);
     if (!city) {
       return res.status(404).json({ message: "City not found" });
