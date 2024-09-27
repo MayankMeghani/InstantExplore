@@ -181,21 +181,21 @@ const ReviewCard = ({ Id, title, review, modifiable, handleModifyReview, handleR
       </div>
 
       {modifiable && (
-        <>
-          <button
-            className="modify-review-btn"
-            onClick={() => handleModifyReview(review._id)}
-          >
-            Modify
-          </button>
-          <button
-            className="remove-review-btn"
-            onClick={() => handleRemoveReview(review._id)}
-          >
-            Remove
-          </button>
-        </>
-      )}
+  <>
+    <button
+      className="modify-review-btn"
+      onClick={() => handleModifyReview(review._id)}
+    >
+      Modify
+    </button>
+    <button
+      className="remove-review-btn"
+      onClick={() => handleRemoveReview(review._id)}
+    >
+      Remove
+    </button>
+  </>
+)}
     </div>
   );
 };

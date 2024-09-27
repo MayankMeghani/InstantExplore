@@ -40,10 +40,10 @@ const Card = ({ Id, images, title, description, rating, onExploreClick, onRemove
         <button onClick={() => onExploreClick(Id)}>Explore</button>
         {isAdmin && (
           <>
-            <button onClick={() => onUpdateClick(Id)} style={{ background: 'green', margin: '8px' }}>
+            <button onClick={() => onUpdateClick(Id)} style={{ background: 'darkslategray', margin: '8px' }}>
               Update
             </button>
-            <button onClick={() => onRemoveClick(Id)} style={{ background: 'red' }}>
+            <button onClick={() => onRemoveClick(Id)} style={{ background: 'darkslategray' }}>
               Remove
             </button>
           </>

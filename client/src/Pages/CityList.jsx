@@ -9,12 +9,14 @@ import './Styles/Modal.css';
 import Search from '../components/Search';
 import Header from '../components/Header';
 import {useUser} from '../hooks/userContext';
-
+import RequestForm from '../Forms/RequestForm';
+import {addRequest} from '../services/requestServices';
 const CityList = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  const [showCityForm, setShowCityForm] = useState(false);
+  const [showRequestForm, setShowRequestForm] = useState(false);
   const [formMode, setFormMode] = useState('add');
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,14 +44,34 @@ const CityList = () => {
     fetchCities();
   }, [user]);
 
-  const handleButtonClick = () => {
-    setFormMode('add');
-    setSelectedCity(null);
-    setShowForm(!showForm);
+  const handleRequestButtonClick = () => {
+    setShowRequestForm(!showRequestForm);
   };
 
-  const handleClose = () => {
-    setShowForm(false);
+  
+  const handleCloseRequestForm = () => {
+    setShowRequestForm(false);
+  };
+  const handleRequestFormSubmit = async (AttractionData) => {
+    try {
+      const response=await addRequest(AttractionData,user.token);
+      console.log(response);
+      setShowRequestForm(false);
+    } catch (error) {
+      setFormError(error.response?.data?.message);
+      console.error('Error submitting form:', error);
+    }
+  };
+
+
+  const handleCityButtonClick = () => {
+    setFormMode('add');
+    setSelectedCity(null);
+    setShowCityForm(!showCityForm);
+  };
+
+  const handleCloseCityForm = () => {
+    setShowCityForm(false);
     setSelectedCity(null);
   };
 
@@ -75,13 +97,13 @@ const CityList = () => {
       const cityData = await getCity(cityId);
       setSelectedCity(cityData);
       setFormMode('update');
-      setShowForm(true);
+      setShowCityForm(true);
     } catch (error) {
       console.error('Error fetching city data:', error);
     }
   };
 
-  const handleFormSubmit = async (cityData) => {
+  const handleCityFormSubmit = async (cityData) => {
     try {
       if (formMode === 'add') {
         const newCity = await createCity(cityData,user.token);
@@ -92,7 +114,7 @@ const CityList = () => {
           city._id === selectedCity._id ? { ...city, ...cityData } : city
         ));
       }
-      setShowForm(false);
+      setShowCityForm(false);
       setSelectedCity(null);
     } catch (error) {
       setFormError(error.response?.data?.message);
@@ -135,23 +157,46 @@ const CityList = () => {
         )}
       </div>
       <div>
-        {isAdmin && (
-          <Button onClick={handleButtonClick}>
-            {showForm ? 'Cancel' : 'Add City'}
+      {!isAdmin&& (
+          <Button onClick={handleRequestButtonClick}>
+            {showCityForm ? 'Cancel' : 'Suggest Place'}
           </Button>
         )}
-      </div>
-      {showForm && (
+
+        {isAdmin && (
+          <Button onClick={handleCityButtonClick}>
+            {showCityForm ? 'Cancel' : 'Add City'}
+          </Button>
+        )}
+      </div>     
+       {showRequestForm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>{'Request to add attraction'}</h2>
+              <button className="close-button" onClick={handleCloseRequestForm}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <RequestForm
+                onSubmit={handleRequestFormSubmit}
+                error={formError}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCityForm && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
               <h2>{formMode === 'add' ? 'Add City' : 'Update City'}</h2>
-              <button className="close-button" onClick={handleClose}>&times;</button>
+              <button className="close-button" onClick={handleCloseCityForm}>&times;</button>
             </div>
             <div className="modal-body">
               <CityForm
                 initialData={selectedCity}
-                onSubmit={handleFormSubmit}
+                onSubmit={handleCityFormSubmit}
                 mode={formMode}
                 error={formError}
               />

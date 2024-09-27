@@ -23,7 +23,6 @@ const Header = () => {
       navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
-      // Optionally, show an error message to the user
     }
   }, [updateUser, navigate]);
 
@@ -42,6 +41,11 @@ const Header = () => {
         <Link to="/" className={`nav-link ${isHomePage ? 'active' : ''}`}>
           Home
         </Link>
+
+        <Link to="/cities" className="nav-link">
+              Cities
+        </Link>
+
         {!isLoggedIn ? (
           <>
             <Link to="/login" className="nav-link">
@@ -53,20 +57,28 @@ const Header = () => {
           </>
         ) : (
           <>
-            <Link to="/cities" className="nav-link">
-              Cities
-            </Link>
-            {/* Show My Reviews only for non-admin users */}
             {!user.isAdmin && (
+              <>
               <Link to="/reviews" className="nav-link">
                 My Reviews
               </Link>
+
+              <Link to="/requests" className="nav-link">
+              Suggestions
+            </Link>
+            </>
             )}
-            {/* Show Admin Panel only for admin users */}
+
             {user.isAdmin && (
-              <Link to="/panel" className="nav-link">
-                Admin Panel
+              <>
+              <Link to="/requests" className="nav-link">
+                Requests
               </Link>
+
+              <Link to="/panel" className="nav-link">
+                Admin Dashboard
+              </Link>
+              </>
             )}
             <button onClick={handleLogout} className="nav-link logout-button">
               Log-out

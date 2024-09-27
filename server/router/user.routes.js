@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-import { getUsers,getUser,createUser,updateUser,deleteUser,validateUser,getReviews,login,isValidToken } from "../controllers/user.controller.js";
+import { getUsers,getUser,createUser,updateUser,deleteUser,validateUser,getReviews,login,isValidToken,getRequests } from "../controllers/user.controller.js";
 
 import authMiddleware from "./authMiddleware.js";
 
@@ -18,5 +18,7 @@ router.route("/:id").get(getUser);
 router.put("/:id",authMiddleware,updateUser).delete("/:id",authMiddleware,deleteUser);
 
 router.route("/reviews/:userId").get(getReviews);
+
+router.route("/requests/:userId").get(getRequests);
 
 export default router;

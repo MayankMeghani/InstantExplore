@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getReviews } from '../services/reviewService';
 import './Styles/TrendingReviewPage.css';
 import TrendingReviewCard from '../components/TrendingReviewCard';
 import Header from '../components/Header';
 import { useUser } from '../hooks/userContext';
+import { deleteReview } from '../services/reviewService';
+
 
 const TrendingReviewPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -12,24 +14,30 @@ const TrendingReviewPage = () => {
   const [sortBy, setSortBy] = useState('mostLikes');
   const { user } = useUser(); 
   
-  
-  useEffect(() => {
-    fetchReviews();
-    const fetchReviews = async () => {
+
+  const fetchReviews = useCallback(
+    async () => {
       setLoading(true);
       const filteredReviews = await fetchAndFilterReviews(sortBy, filterBy);
       setReviews(filteredReviews);
       setLoading(false);
-    };
-  }, [filterBy, sortBy ]);
+    },[sortBy,filterBy]
+  );
+
   
+ 
+
+  useEffect(() => {
+    fetchReviews();
+
+     }, [ fetchReviews ]);
+
 
   const fetchAndFilterReviews = async (sortBy, filterBy) => {
     const data = await getReviews(); // Fetch all reviews
   
     let filteredReviews = [];
   
-    // Filter based on 'likedByMe' or 'unlikedByMe'
     if (filterBy === 'likedByMe') {
       filteredReviews = data.filter(review => review.likedBy.includes(user._id));
     } else if (filterBy === 'unlikedByMe') {
@@ -38,7 +46,6 @@ const TrendingReviewPage = () => {
       filteredReviews = data;
     }
   
-    // Apply sorting based on 'mostLikes' or 'mostUnlikes'
     if (sortBy === 'mostLikes') {
       filteredReviews.sort((a, b) => b.likedBy.length - a.likedBy.length);
     } else if (sortBy === 'mostUnlikes') {
@@ -48,6 +55,17 @@ const TrendingReviewPage = () => {
     return filteredReviews;
   };
   
+  const handleRemoveReview = async (reviewId) => {
+    try {
+      await deleteReview(reviewId, user.token);
+      console.log(`Review with ID: ${reviewId} removed`);
+      fetchReviews(user._id); 
+    } catch (error) {
+      console.error('Error removing review:', error);
+    }
+  };
+
+
 
   const handleFilterChange = (newFilter) => {
     setFilterBy(newFilter);
@@ -113,7 +131,7 @@ const TrendingReviewPage = () => {
               <div>No reviews found</div>
             ):(
               reviews.map((review, index) => (
-                <TrendingReviewCard key={index} index={index} review={review} />
+                <TrendingReviewCard key={index} index={index} review={review} handleRemoveReview={handleRemoveReview}/>
               ))
             )}
           </div>

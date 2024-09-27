@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  requests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Request',
+  }],
   reviews: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Review',
