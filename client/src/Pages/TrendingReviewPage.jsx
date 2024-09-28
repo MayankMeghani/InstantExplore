@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getReviews } from '../services/reviewService';
 import './Styles/TrendingReviewPage.css';
 import TrendingReviewCard from '../components/TrendingReviewCard';
-import Header from '../components/Header';
 import { useUser } from '../hooks/userContext';
 import { deleteReview } from '../services/reviewService';
 
@@ -78,7 +77,6 @@ const TrendingReviewPage = () => {
 
   return (
     <>
-      <Header />
       <div className="trending-reviews">
         <h2>Trending Reviews</h2>
         <div className="filter-sort-container">

@@ -6,7 +6,7 @@ const getReviews = async (req, res) => {
     try {
         const reviews = await Review.find({}) .populate({
           path: 'attraction', 
-          select: 'name location'
+          select: 'name location city'
       }).populate('user','name');
         res.status(200).json(reviews);
     } catch (error) {

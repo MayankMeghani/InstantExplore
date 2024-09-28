@@ -13,6 +13,7 @@ const ReviewCard = ({ Id, title, review, modifiable, handleModifyReview, handleR
   const { user } = useUser(); 
 
   useEffect(() => {
+    // Set the initial liked/unliked state when the component mounts or the review changes
     if (user) {
       if (review.likedBy.includes(user._id)) {
         setLiked('like');
@@ -22,9 +23,13 @@ const ReviewCard = ({ Id, title, review, modifiable, handleModifyReview, handleR
         setLiked(null);
       }
     }
-  }, [user, review.likedBy, review.unlikedBy]);
-
-    const openOverlay = (index) => {
+  
+    // Update like and unlike counts whenever the review changes
+    setLikeCount(review.likedBy.length);
+    setUnlikeCount(review.unlikedBy.length);
+  
+  }, [user, review]);
+      const openOverlay = (index) => {
       setCurrentImageIndex(index);
       setShowOverlay(true);
     };

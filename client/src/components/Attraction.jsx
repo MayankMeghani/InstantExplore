@@ -11,6 +11,7 @@ const Attraction = ({ initialAttraction, user }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewToEdit, setReviewToEdit] = useState(null);
   const [formError, setFormError] = useState(null);
+  const [sortBy, setSortBy] = useState('mostLikes'); // State for sorting method
 
   const handleClose = () => {
     setShowReviewForm(false);
@@ -24,7 +25,6 @@ const Attraction = ({ initialAttraction, user }) => {
       if (reviewToEdit) {
         const updatedReview = await updateReview(reviewToEdit._id, review, user.token);
         console.log('Review updated:', updatedReview);
-        // Update the specific review in the attraction state
         updatedAttraction = {
           ...attraction,
           reviews: attraction.reviews.map(r => (r._id === updatedReview._id ? updatedReview : r)),
@@ -32,14 +32,13 @@ const Attraction = ({ initialAttraction, user }) => {
       } else {
         const newReview = await createReview(review, user.token);
         console.log('New review created:', newReview);
-        // Add new review to the attraction state
         updatedAttraction = {
           ...attraction,
           reviews: [...attraction.reviews, newReview],
         };
       }
 
-      setAttraction(updatedAttraction); // Update the attraction with the new or updated review
+      setAttraction(updatedAttraction);
       setShowReviewForm(false);
       setReviewToEdit(null);
       setFormError(null);
@@ -58,16 +57,28 @@ const Attraction = ({ initialAttraction, user }) => {
   const handleRemoveReview = async (reviewId) => {
     try {
       await deleteReview(reviewId, user.token);
-      console.log(`Review with ID: ${reviewId} removed`);
       const updatedAttraction = {
         ...attraction,
         reviews: attraction.reviews.filter(review => review._id !== reviewId),
       };
-      setAttraction(updatedAttraction); // Update the attraction with the deleted review
+      setAttraction(updatedAttraction);
     } catch (error) {
       console.error('Error removing review:', error);
     }
   };
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value); // Update sortBy state when a new option is selected
+  };
+
+  const sortedReviews = [...attraction.reviews].sort((a, b) => {
+    if (sortBy === 'mostLikes') {
+      return b.likedBy.length - a.likedBy.length;
+    } else if (sortBy === 'mostUnlikes') {
+      return b.unlikedBy.length - a.unlikedBy.length;
+    }
+    return 0;
+  });
 
   return (
     <div className="attraction-container">
@@ -109,8 +120,20 @@ const Attraction = ({ initialAttraction, user }) => {
             Write a Review
           </button>
         )}
-        {attraction.reviews.length > 0 ? (
-          attraction.reviews.map((review, index) => (
+        <div className="sort-options">
+          <h3>Sort results:</h3>
+          <select
+            value={sortBy}
+            onChange={handleSortChange}
+            className="sort-dropdown"
+          >
+            <option value="mostLikes">Most Likes</option>
+            <option value="mostUnlikes">Most Unlikes</option>
+          </select>
+        </div>
+
+        {sortedReviews.length > 0 ? (
+          sortedReviews.map((review, index) => (
             <ReviewCard
               key={index}
               Id={index}

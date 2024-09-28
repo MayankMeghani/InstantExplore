@@ -1,10 +1,14 @@
 import Attraction from "../models/Attraction.js";
 import Request from "../models/Request.js";
 import User from "../models/User.js";
+import {sendStatusChangeEmail} from '../utills/mailer.js';
 
 const getRequests = async (req, res) => {
     try {
-        const requests = await Request.find({});
+        const requests = await Request.find({}).populate({
+            path: 'user',
+            select: 'name' 
+        });
         res.status(200).json(requests);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -53,13 +57,20 @@ const createRequest = async (req, res) => {
   
 
 const updateRequest = async (req, res) => {
-    const {request} = req.body;
+    const{id}=req.params;
+    const {status} = req.body;
     try {
+        const request = await Request.findById(id).populate({
+            path: 'user',
+            select: 'name email'
+        });
+        if (!request) return res.status(404).json({ message: 'Request not found' });
         const updatedRequest = await Request.findByIdAndUpdate(
-            request._id,
-            request,
+            id,
+            {status},
             { new: true }
         );
+        sendStatusChangeEmail(request.user.email,request.user.name,status);
         res.json(updatedRequest);
     } catch (error) {
         res.status(404).json({ message: "Request not found" });

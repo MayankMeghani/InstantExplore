@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Star, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useUser } from '../hooks/userContext';
 import { updateLike } from '../services/reviewService';
+import { Link } from 'react-router-dom'; 
+import { FiArrowRightCircle } from 'react-icons/fi'; 
+
 const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
     const [showOverlay, setShowOverlay] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -22,13 +25,11 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
         }
     }, [user, review.likedBy, review.unlikedBy]);
 
-
     const openOverlay = (index) => {
         setCurrentImageIndex(index);
         setShowOverlay(true);
     };
 
-    // Function to close the image overlay
     const closeOverlay = () => {
         setShowOverlay(false);
     };
@@ -39,7 +40,7 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
 
         if (newLikeStatus === 'like') {
             setLikeCount(likeCount + 1);
-            if (liked === 'unlike') setUnlikeCount(unlikeCount - 1); // Remove from unlikes if phreviously unliked
+            if (liked === 'unlike') setUnlikeCount(unlikeCount - 1); 
         } else {
             setLikeCount(likeCount - 1);
         }
@@ -57,12 +58,11 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
 
     const handleUnlike = async () => {
         const newLikeStatus = liked === 'unlike' ? null : 'unlike';
-        const prevLiked = liked; // Save previous like state to revert if API fails
+        const prevLiked = liked; 
 
-        // Optimistically update the UI
         if (newLikeStatus === 'unlike') {
             setUnlikeCount(unlikeCount + 1);
-            if (liked === 'like') setLikeCount(likeCount - 1); // Remove from likes if previously liked
+            if (liked === 'like') setLikeCount(likeCount - 1); 
         } else {
             setUnlikeCount(unlikeCount - 1);
         }
@@ -70,7 +70,6 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
 
         try {
             await updateLike(review._id, newLikeStatus, user);
-            
         } catch (error) {
             console.error("Error updating unlike status:", error);
             setLiked(prevLiked);
@@ -78,9 +77,6 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
             if (liked === 'like') setLikeCount(likeCount + 1);
         }
     };
-
-
-
 
     return (
         <div key={index} className="review-card">
@@ -100,50 +96,46 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
                 </div>
             </div>
             <div className="attraction-info">
-                <h3 className="attraction-name">{review.attraction.name}</h3>
+                <h3 className="attraction-name">
+                        {review.attraction.name}
+                        
+                    <Link to={`/cities/${review.attraction.city}/attractions/${review.attraction._id}`} className="attraction-link">
+                        <FiArrowRightCircle size={20} style={{ marginLeft: '8px' }} />
+                    </Link>    
+                </h3>
                 <p className="attraction-location">{review.attraction.location}</p>
             </div>
 
-
-
             {review.images && review.images.length > 0 && (
-
-                <div className={`image-grid grid-${Math.min(review.images.length, 3)}`}>
-                    {
-                        review.images.slice(0, 2).map((image, index) => (
-                            <img
-                                key={index}
-                                src={typeof image === 'string' ? image : URL.createObjectURL(image)}
-                                alt={`Review  ${index + 1}`}
-                                className={`review-image ${review.images.length}`}
-
-                                onClick={() => openOverlay(index)}
-                            />
-                        ))
-                    }
-                    {
-                        review.images.length === 3 && (
+                <div className={`review-image-grid grid-${Math.min(review.images.length, 3)}`}>
+                    {review.images.slice(0, 2).map((image, index) => (
+                        <img
+                            key={index}
+                            src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+                            alt={`Review  ${index + 1}`}
+                            className={`review-image ${review.images.length}`}
+                            onClick={() => openOverlay(index)}
+                        />
+                    ))}
+                    {review.images.length === 3 && (
+                        <img
+                            src={review.images[2]}
+                            alt="View More"
+                            className={`review-image ${review.images.length}`}
+                        />
+                    )}
+                    {review.images.length > 3 && (
+                        <div className="view-more-thumbnail" onClick={() => openOverlay(2)}>
                             <img
                                 src={review.images[2]}
                                 alt="View More"
                                 className={`review-image ${review.images.length}`}
                             />
-                        )
-                    }
-                    {
-                        review.images.length > 3 && (
-                            <div className="view-more-thumbnail" onClick={() => openOverlay(2)}>
-                                <img
-                                    src={review.images[2]}
-                                    alt="View More"
-                                    className={`review-image ${review.images.length}`}
-                                />
-                                <div className="view-more-overlay">
-                                    <span>+{review.images.length - 2} More</span>
-                                </div>
+                            <div className="view-more-overlay">
+                                <span>+{review.images.length - 2} More</span>
                             </div>
-                        )
-                    }
+                        </div>
+                    )}
                     {showOverlay && (
                         <div className="image-overlay">
                             <span className="close-overlay" onClick={closeOverlay}>
@@ -169,10 +161,8 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
                             </div>
                         </div>
                     )}
-
-                </div>)
-            }
-
+                </div>
+            )}
 
             <p className="review-text">{review.text}</p>
             <div className="review-actions">
@@ -197,16 +187,17 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
                         <span className="unlike-count"><ThumbsDown size={16} /> {unlikeCount} Unlike</span>
                     </>
                 )}
-                {user.isAdmin &&
+                {user && user.isAdmin && (
                     <button
-                    className="remove-review-btn"
-                    onClick={() => handleRemoveReview(review._id)}
+                        className="remove-review-btn"
+                        onClick={() => handleRemoveReview(review._id)}
                     >
-                    Remove
-                  </button>
-                }
+                        Remove
+                    </button>
+                )}
             </div>
-        </div>);
-}
+        </div>
+    );
+};
 
 export default TrendingReviewCard;

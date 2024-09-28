@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'; // Assuming you're passing the ID via URL params
 import Attraction from '../components/Attraction';
 import { getAttraction } from '../services/attractionService';
-import Header from '../components/Header';
 import {useUser} from '../hooks/userContext';
 const AttractionPage = () => {
   const { attractionId } = useParams(); // Get the attraction ID from the URL
@@ -49,7 +48,6 @@ const AttractionPage = () => {
 
   return(
     <>
-    <Header/>
     <Attraction initialAttraction={attractionData} user={User} />
     
     </>

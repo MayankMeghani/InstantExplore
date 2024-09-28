@@ -14,12 +14,13 @@ import SignUp from './Forms/SignUp';
 import AdminPanel from './Pages/AdminPanel';
 import TrendingReviewPage from './Pages/TrendingReviewPage';
 import RequestList from './Pages/RequestList';
-
+import Header from './components/Header';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <UserProvider>
       <Router>
+      <Header /> 
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/cities" element={<CityList />} />
