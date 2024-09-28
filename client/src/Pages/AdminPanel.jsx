@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getCountries, updateCountry, updateState, deleteCountry, deleteState ,getCountryStates } from '../services/stateService'; // Import your service functions
 import {useUser} from '../hooks/userContext';
-import Header from '../components/Header';
 import Button from '../components/addButton';
 import CountryForm from '../Forms/CountryForm';
 import { createCountry , createState } from '../services/stateService';
@@ -126,11 +125,9 @@ const AdminPanel = () => {
 
   return (
     <>
-    <Header/>
     <div className="admin-panel">
       <h2>Admin Panel</h2>
       
-      {/* Country Management */}
       <div className="country-management">
         <h3>Countries</h3>
         <ul>

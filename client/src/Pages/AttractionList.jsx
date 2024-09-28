@@ -8,7 +8,6 @@ import AttractionForm from '../Forms/AttractionForm';
 import './Styles/Modal.css';
 import './Styles/CityList.css';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
 import Search from '../components/Search';
 import {useUser} from '../hooks/userContext';
 
@@ -112,11 +111,9 @@ const AttractionList = () => {
   );
 
   if (loading) return <div>Loading...</div>;
-  // if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="list">
-      <Header />
       <Search onSearch={handleSearch} />
       <div className="cards">
         {filteredAttraction.length > 0 ? (

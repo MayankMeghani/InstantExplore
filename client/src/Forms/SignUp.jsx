@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import styles from './Styles/Auth.module.css';
 import {signUp} from '../services/AuthenticationService'
@@ -28,8 +27,13 @@ const SignUp = () => {
         isAdmin
       }
       const response=await signUp(userData);
-  
-      setMessage(response.message); 
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setIsAdmin(false);
+      
+      setMessage(response.message);
       setError(''); 
 
     } catch (err) {
@@ -41,12 +45,11 @@ const SignUp = () => {
 
   return (
     <div>
-      <Header />
       <div className={styles.authPageWrapper}>
         <div className={styles.authContainer}>
           <h2 className={styles.authTitle}>Sign Up</h2>
           {error && <p className={styles.errorMessage}>{error}<br></br></p>}
-          {message && <div className={styles.successMessage}>{message}<br></br></div>}
+          {message && <div className={styles.successMessage}>{message}<p>Verification link sent to registered email.</p><br></br></div>}
 
           <form className={styles.authForm} onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
@@ -75,7 +78,7 @@ const SignUp = () => {
                   id="user"
                   name="role"
                   value="false"
-                  checked={!isAdmin} // If isAdmin is false, this radio button will be checked
+                  checked={!isAdmin} 
                   onChange={(e) => setIsAdmin(e.target.value === "true")}
                 />
                 <label htmlFor="user">User</label>
@@ -85,7 +88,7 @@ const SignUp = () => {
                   id="admin"
                   name="role"
                   value="true"
-                  checked={isAdmin} // If isAdmin is true, this radio button will be checked
+                  checked={isAdmin} 
                   onChange={(e) => setIsAdmin(e.target.value === "true")}
                 />
                 <label htmlFor="admin">Admin</label>

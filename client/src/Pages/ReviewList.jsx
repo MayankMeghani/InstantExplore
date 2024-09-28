@@ -3,7 +3,6 @@ import { getUserReviews } from "../services/userServices";
 import ReviewCard from "../components/ReviewCard";
 import ReviewForm from "../Forms/ReviewForm";
 import { createReview, updateReview, deleteReview } from "../services/reviewService";
-import Header from "../components/Header";
 import Search from "../components/Search";
 import "./Styles/ReviewList.css";
 import { useUser } from '../hooks/userContext';
@@ -84,7 +83,6 @@ const ReviewList = () => {
   return (
     <>
       <div className="list">
-        <Header />
         <Search onSearch={handleSearch} />
         {filteredReviews.length > 0 ? (
           filteredReviews.map((review) => (

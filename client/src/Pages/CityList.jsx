@@ -7,7 +7,6 @@ import Button from '../components/addButton';
 import CityForm from '../Forms/CityForm';
 import './Styles/Modal.css';
 import Search from '../components/Search';
-import Header from '../components/Header';
 import {useUser} from '../hooks/userContext';
 import RequestForm from '../Forms/RequestForm';
 import {addRequest} from '../services/requestServices';
@@ -128,6 +127,7 @@ const CityList = () => {
 
   const filteredCities = cities.filter(city =>
     city.name.toLowerCase().includes(searchQuery.toLowerCase())
+    || city.state.name.toLowerCase().includes(searchQuery.toLocaleLowerCase())
   );
 
   if (loading) return <div>Loading...</div>;
@@ -135,7 +135,6 @@ const CityList = () => {
 
   return (
     <div className="list">
-      <Header />
       <Search onSearch={handleSearch} />
       
       <div className="cards"> 
@@ -157,7 +156,7 @@ const CityList = () => {
         )}
       </div>
       <div>
-      {!isAdmin&& (
+      {user && !isAdmin&& (
           <Button onClick={handleRequestButtonClick}>
             {showCityForm ? 'Cancel' : 'Suggest Place'}
           </Button>

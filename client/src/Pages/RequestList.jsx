@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { getUserRequests } from "../services/userServices";  
-import Header from "../components/Header";
 import Search from "../components/Search";
 import { useUser } from '../hooks/userContext';
 import "./Styles/RequestList.css";
 import RequestCard from "../components/RequestCard";
-import { getRequests, removeRequest } from "../services/requestServices";
+import { getRequests,updateRequest, removeRequest } from "../services/requestServices";
 
 const RequestList = () => {
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [error, setError] = useState(null); // State to handle errors
+  const [error, setError] = useState(null); 
   const { user } = useUser();
 
   useEffect(() => {
@@ -31,6 +30,18 @@ const RequestList = () => {
     }
   };
 
+  const handleUpdateRequest = async (request, updatedStatus) => {
+    try {
+      console.log(`Request with ID: ${request._id} updated to status: ${updatedStatus}`);
+      await updateRequest(request._id, { status: updatedStatus }, user.token);
+      setRequests((prevRequests) =>
+      prevRequests.map((req) => (req._id === request._id ? { ...req, status: updatedStatus } : req))
+    );
+    } catch (error) {
+      setError('Error updating request. Please try again later.');
+    }
+  }
+
   const handleRemoveRequest = async (requestId) => {
     try {
       console.log(`Request with ID: ${requestId} removed`);
@@ -45,6 +56,7 @@ const RequestList = () => {
 
   const filteredRequests = requests.filter(request =>
     request.name.toLowerCase().includes(searchQuery.toLowerCase())
+    || request.city.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const fetchRequests = async (id, token) => {
@@ -62,7 +74,6 @@ const RequestList = () => {
 
   return (
     <div className="list-container">
-       <Header />
        <Search onSearch={handleSearch} />
        <div className="request-list">
        {filteredRequests.length > 0 ? (
@@ -70,6 +81,7 @@ const RequestList = () => {
             <RequestCard
               key={request._id}
               request={request}
+              onUpdateRequest={handleUpdateRequest}
               onRemoveRequest={handleRemoveRequest}
             />
           ))) : (

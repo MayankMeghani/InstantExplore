@@ -27,7 +27,11 @@ const userSchema = new mongoose.Schema({
     ref: 'Review',
   }],
   likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }], 
-  unlikedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
+  unlikedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+  isVerified: { 
+    type: mongoose.Schema.Types.Boolean,
+    default: false,
+  } ,
 });
 
 const User = mongoose.model('User', userSchema);

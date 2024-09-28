@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import styles from './Styles/Auth.module.css';
 import { logIn } from '../services/AuthenticationService';
@@ -37,7 +36,6 @@ const LogIn = () => {
 
   return (
     <div>
-      <Header />
       <div className={styles.authPageWrapper}>
         <div className={styles.authContainer}>
           <h2 className={styles.authTitle}>Log In</h2>
