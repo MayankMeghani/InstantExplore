@@ -1,6 +1,8 @@
+// src/Components/CityList.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCities, createCity, deleteCity, updateCity, getCity } from '../services/cityServices';
+
 import Card from '../components/Card';
 import './Styles/CityList.css';
 import Button from '../components/addButton';
@@ -8,9 +10,11 @@ import CityForm from '../Forms/CityForm';
 import './Styles/Modal.css';
 import Search from '../components/Search';
 import {useUser} from '../hooks/userContext';
+
 import RequestForm from '../Forms/RequestForm';
 import {addRequest} from '../services/requestServices';
 import CircularProgress from '@mui/material/CircularProgress'; 
+
 const CityList = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +24,7 @@ const CityList = () => {
   const [formMode, setFormMode] = useState('add');
   const [selectedCity, setSelectedCity] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [formError, setFormError] = useState(null);
   const navigate = useNavigate();
