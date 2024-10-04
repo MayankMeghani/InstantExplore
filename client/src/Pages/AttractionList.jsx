@@ -10,7 +10,7 @@ import './Styles/CityList.css';
 import { useNavigate } from 'react-router-dom';
 import Search from '../components/Search';
 import {useUser} from '../hooks/userContext';
-
+import CircularProgress from '@mui/material/CircularProgress'; 
 const AttractionList = () => {
   const { cityId } = useParams();
   const [attractions, setAttractions] = useState([]);
@@ -110,7 +110,7 @@ const AttractionList = () => {
     attraction.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className='loader'><CircularProgress /></div>;;
 
   return (
     <div className="list">

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'; // Assuming you're passing the ID 
 import Attraction from '../components/Attraction';
 import { getAttraction } from '../services/attractionService';
 import {useUser} from '../hooks/userContext';
+import CircularProgress from '@mui/material/CircularProgress'; 
 const AttractionPage = () => {
   const { attractionId } = useParams(); // Get the attraction ID from the URL
   const [attractionData, setAttractionData] = useState(null);
@@ -43,7 +44,7 @@ const AttractionPage = () => {
     fetchAttraction();
   }, [attractionId,user]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className='loader'><CircularProgress /></div>;
   if (error) return <div>Error: {error}</div>;
 
   return(

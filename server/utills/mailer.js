@@ -5,12 +5,13 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: ['mayankmeghani1627@gmail.com'], 
-    pass: 'jduf yicc sdwl oium', 
+    user: ['project.mailer.service@gmail.com'], 
+    pass: 'fuxm rdju unfu swux', 
   }
 });
 
 const sendStatusChangeEmail = (toEmail, userName, requestStatus) => {
+  console.log(process.env.EMAIL_USER);
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: toEmail,

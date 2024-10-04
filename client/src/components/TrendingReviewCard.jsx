@@ -96,7 +96,7 @@ const TrendingReviewCard = ({ index, review, handleRemoveReview }) => {
                 </div>
             </div>
             <div className="attraction-info">
-                <h3 className="attraction-name">
+                <h3 className="attraction-nameh">
                         {review.attraction.name}
                         
                     <Link to={`/cities/${review.attraction.city}/attractions/${review.attraction._id}`} className="attraction-link">

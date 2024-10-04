@@ -6,6 +6,7 @@ import { createReview, updateReview, deleteReview } from "../services/reviewServ
 import Search from "../components/Search";
 import "./Styles/ReviewList.css";
 import { useUser } from '../hooks/userContext';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const ReviewList = () => {
   const [loading, setLoading] = useState(true);
@@ -74,11 +75,11 @@ const ReviewList = () => {
     } catch (error) {
       console.error('Error fetching reviews:', error);
     } finally {
-      setLoading(false); // Ensure loading state is updated
+      setLoading(false); 
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className='loader'><CircularProgress /></div>;
 
   return (
     <>

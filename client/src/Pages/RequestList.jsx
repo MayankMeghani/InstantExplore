@@ -1,54 +1,76 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import { getUserRequests } from "../services/userServices";  
 import Search from "../components/Search";
 import { useUser } from '../hooks/userContext';
 import "./Styles/RequestList.css";
 import RequestCard from "../components/RequestCard";
-import { getRequests,updateRequest, removeRequest } from "../services/requestServices";
+import { getRequests, updateRequest, removeRequest } from "../services/requestServices";
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
 
 const RequestList = () => {
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState(null); 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const { user } = useUser();
 
-  useEffect(() => {
-    if (user) {
-      fetchData();
-    }
-  }, [user]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      await fetchRequests(user._id, user.token);
+       let data;
+    if (user.isAdmin) {
+      data = await getRequests();
+    } else {
+      data = await getUserRequests(user._id);
+    }
+    setRequests(data);
     } catch (error) {
+      console.error(error);
       setError('Error fetching requests. Please try again later.');
     } finally {
       setLoading(false);
     }
-  };
+  },[user]);
 
+  useEffect(() => {
+
+    if (user) {
+      fetchData();
+    }
+  }, [user,fetchData]);
+  
+
+  
   const handleUpdateRequest = async (request, updatedStatus) => {
     try {
-      console.log(`Request with ID: ${request._id} updated to status: ${updatedStatus}`);
+      setLoading(true);
       await updateRequest(request._id, { status: updatedStatus }, user.token);
       setRequests((prevRequests) =>
-      prevRequests.map((req) => (req._id === request._id ? { ...req, status: updatedStatus } : req))
-    );
+        prevRequests.map((req) => (req._id === request._id ? { ...req, status: updatedStatus } : req))
+      );
+      setSnackbarOpen(true); // Show success message
     } catch (error) {
+      console.error(error);
       setError('Error updating request. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   }
 
   const handleRemoveRequest = async (requestId) => {
     try {
-      console.log(`Request with ID: ${requestId} removed`);
+      setLoading(true);
       await removeRequest(requestId, user.token);
       setRequests(requests.filter(request => request._id !== requestId));
+      setSnackbarOpen(true); // Show success message
     } catch (error) {
+      console.error(error);
       setError('Error removing request. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,18 +81,12 @@ const RequestList = () => {
     || request.city.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const fetchRequests = async (id, token) => {
-    let data;
-    if (user.isAdmin) {
-      data = await getRequests();
-    } else {
-      data = await getUserRequests(id);
-    }
-    setRequests(data);
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error-message">{error}</div>; // Display error message
+  if (loading) return <div className='loader'><CircularProgress /></div>;
+  if (error) return <div className="error-message">{error}</div>; 
 
   return (
     <div className="list-container">
@@ -85,9 +101,15 @@ const RequestList = () => {
               onRemoveRequest={handleRemoveRequest}
             />
           ))) : (
-            <div className="no-requests">No requests found.</div>
+            <div className="no-requests">No requests found. Try adding new requests.</div>
           )}
        </div>
+       <Snackbar
+         open={snackbarOpen}
+         onClose={handleCloseSnackbar}
+         message="Operation successful!"
+         autoHideDuration={3000}
+       />
     </div>
   );
 };
