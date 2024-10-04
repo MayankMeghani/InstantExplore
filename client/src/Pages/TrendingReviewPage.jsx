@@ -4,6 +4,7 @@ import './Styles/TrendingReviewPage.css';
 import TrendingReviewCard from '../components/TrendingReviewCard';
 import { useUser } from '../hooks/userContext';
 import { deleteReview } from '../services/reviewService';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const TrendingReviewPage = () => {
@@ -17,10 +18,27 @@ const TrendingReviewPage = () => {
   const fetchReviews = useCallback(
     async () => {
       setLoading(true);
-      const filteredReviews = await fetchAndFilterReviews(sortBy, filterBy);
+      const data = await getReviews(); // Fetch all reviews
+  
+      let filteredReviews = [];
+    
+      if (filterBy === 'likedByMe') {
+        filteredReviews = data.filter(review => review.likedBy.includes(user._id));
+      } else if (filterBy === 'unlikedByMe') {
+        filteredReviews = data.filter(review => review.unlikedBy.includes(user._id));
+      } else {
+        filteredReviews = data;
+      }
+    
+      if (sortBy === 'mostLikes') {
+        filteredReviews.sort((a, b) => b.likedBy.length - a.likedBy.length);
+      } else if (sortBy === 'mostUnlikes') {
+        filteredReviews.sort((a, b) => b.unlikedBy.length - a.unlikedBy.length);
+      }
+    
       setReviews(filteredReviews);
       setLoading(false);
-    },[sortBy,filterBy]
+    },[sortBy,filterBy,user]
   );
 
   
@@ -31,28 +49,6 @@ const TrendingReviewPage = () => {
 
      }, [ fetchReviews ]);
 
-
-  const fetchAndFilterReviews = async (sortBy, filterBy) => {
-    const data = await getReviews(); // Fetch all reviews
-  
-    let filteredReviews = [];
-  
-    if (filterBy === 'likedByMe') {
-      filteredReviews = data.filter(review => review.likedBy.includes(user._id));
-    } else if (filterBy === 'unlikedByMe') {
-      filteredReviews = data.filter(review => review.unlikedBy.includes(user._id));
-    } else {
-      filteredReviews = data;
-    }
-  
-    if (sortBy === 'mostLikes') {
-      filteredReviews.sort((a, b) => b.likedBy.length - a.likedBy.length);
-    } else if (sortBy === 'mostUnlikes') {
-      filteredReviews.sort((a, b) => b.unlikedBy.length - a.unlikedBy.length);
-    }
-  
-    return filteredReviews;
-  };
   
   const handleRemoveReview = async (reviewId) => {
     try {
@@ -122,7 +118,7 @@ const TrendingReviewPage = () => {
         </div>
         
         {loading ? (
-          <div>Loading...</div>
+          <div className='loader'><CircularProgress /></div>
         ) : (
           <div className="reviews-container">
             {reviews.length===0?(

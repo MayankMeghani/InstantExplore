@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full page height */
+  width: 100vw;  /* Full page width */
+  position: absolute; /* Position the container */
+  top: 0;
+  left: 0;
+  /* background-color: rgba(255, 255, 255, 0.8); Optional background to mask the content */
+  z-index: 1000; /* Ensure it sits above other elements */
+}

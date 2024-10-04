@@ -5,33 +5,31 @@ import { createReview, updateReview, deleteReview } from '../services/reviewServ
 import ImageGrid from './ImageGrid.jsx';
 import './Styles/Modal.css';
 import ReviewCard from './ReviewCard.jsx';
+import { Star } from 'lucide-react';
 
 const Attraction = ({ initialAttraction, user }) => {
-  const [attraction, setAttraction] = useState(initialAttraction); // State for attraction data
+  const [attraction, setAttraction] = useState(initialAttraction);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewToEdit, setReviewToEdit] = useState(null);
   const [formError, setFormError] = useState(null);
-  const [sortBy, setSortBy] = useState('mostLikes'); // State for sorting method
+  const [sortBy, setSortBy] = useState('mostLikes');
 
   const handleClose = () => {
     setShowReviewForm(false);
   };
 
-  // Function to handle new review or update review
   const handleSubmitReview = async (review) => {
     try {
       let updatedAttraction;
 
       if (reviewToEdit) {
         const updatedReview = await updateReview(reviewToEdit._id, review, user.token);
-        console.log('Review updated:', updatedReview);
         updatedAttraction = {
           ...attraction,
           reviews: attraction.reviews.map(r => (r._id === updatedReview._id ? updatedReview : r)),
         };
       } else {
         const newReview = await createReview(review, user.token);
-        console.log('New review created:', newReview);
         updatedAttraction = {
           ...attraction,
           reviews: [...attraction.reviews, newReview],
@@ -43,7 +41,6 @@ const Attraction = ({ initialAttraction, user }) => {
       setReviewToEdit(null);
       setFormError(null);
     } catch (error) {
-      console.error('Error submitting review:', error);
       setFormError(error.response?.data?.message || 'Failed to submit review');
     }
   };
@@ -68,7 +65,7 @@ const Attraction = ({ initialAttraction, user }) => {
   };
 
   const handleSortChange = (event) => {
-    setSortBy(event.target.value); // Update sortBy state when a new option is selected
+    setSortBy(event.target.value);
   };
 
   const sortedReviews = [...attraction.reviews].sort((a, b) => {
@@ -82,8 +79,24 @@ const Attraction = ({ initialAttraction, user }) => {
 
   return (
     <div className="attraction-container">
+      <br/><br/><br/>
+      <div className="attraction-header">
       <h1 className="attraction-name">{attraction.name}</h1>
-
+      {attraction.rating > 0 &&(
+        <>  <div className="rating">
+                <span>{attraction.rating.toFixed(1)}</span>
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    fill={i < attraction.rating ? "gold" : "none"}
+                    stroke={i < attraction.rating ? "gold" : "currentColor"}
+                  />
+                ))}
+              </div>
+              </>
+      )}
+    </div> 
       <ImageGrid images={attraction.images} />
 
       <div className="attraction-location">

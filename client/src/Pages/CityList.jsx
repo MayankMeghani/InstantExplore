@@ -13,7 +13,7 @@ import {useUser} from '../hooks/userContext';
 
 import RequestForm from '../Forms/RequestForm';
 import {addRequest} from '../services/requestServices';
-
+import CircularProgress from '@mui/material/CircularProgress'; 
 
 const CityList = () => {
   const [cities, setCities] = useState([]);
@@ -31,6 +31,7 @@ const CityList = () => {
   const {user} = useUser();
 
   useEffect(() => {
+
     const fetchCities = async () => {
       try {
         const response = await getCities();
@@ -113,6 +114,7 @@ const CityList = () => {
       if (formMode === 'add') {
         const newCity = await createCity(cityData,user.token);
         setCities([...cities, newCity]);
+        console.log(cities);
       } else if (formMode === 'update') {
         await updateCity(selectedCity._id, cityData,user.token);
         setCities(cities.map(city =>
@@ -136,7 +138,7 @@ const CityList = () => {
     || city.state.name.toLowerCase().includes(searchQuery.toLocaleLowerCase())
   );
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className='loader'><CircularProgress /></div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
