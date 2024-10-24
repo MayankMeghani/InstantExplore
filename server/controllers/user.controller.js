@@ -20,10 +20,10 @@ const createUser = async (req, res) => {
     const { name, email, password, isAdmin } = req.body;
   try {
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email, isProfileComplete: true });
     if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
+      return res.status(400).json({ error: 'User already exists with a complete profile' });
+    }    
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ name, email, password:hashedPassword, isAdmin, isVerified: false});

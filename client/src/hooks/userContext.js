@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import {jwtDecode} from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode'; 
 import { isValidToken } from '../services/AuthenticationService'; // Assuming your isValidToken function is here
-
+import { logOut } from '../services/AuthenticationService';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -12,7 +12,7 @@ export const UserProvider = ({ children }) => {
     
     if (token && isValidToken(token)) {
       const decodedToken = jwtDecode(token);
-      setUser({...decodedToken,token});
+      setUser({ ...decodedToken, token });
     } else {
       setUser(null);
       localStorage.removeItem('token');
@@ -21,18 +21,26 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     fetchAndSetUser();
-  }, []); // Empty dependency array means it runs once on mount
+  }, []); // Runs once on mount
 
   const updateUser = () => {
     fetchAndSetUser();
   };
 
+   const logout = async () => {
+    try {
+      await logOut(); // Call your logout service
+      setUser(null); // Clear user state
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, updateUser }}>
+    <UserContext.Provider value={{ user, updateUser, logout  }}>
       {children}
     </UserContext.Provider>
   );
 };
 
-// Custom hook to use the user context
 export const useUser = () => useContext(UserContext);

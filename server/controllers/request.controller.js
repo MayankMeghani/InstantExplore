@@ -70,7 +70,7 @@ const updateRequest = async (req, res) => {
             {status},
             { new: true }
         );
-        sendStatusChangeEmail(request.user.email,request.user.name,status);
+        sendStatusChangeEmail(request.user.email,request.user.name,updatedRequest);
         res.json(updatedRequest);
     } catch (error) {
         res.status(404).json({ message: "Request not found" });
