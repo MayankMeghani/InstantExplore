@@ -1,46 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import {  createAttraction, deleteAttraction, getAttraction, updateAttraction } from '../services/attractionService';
 import { getCityAttractions } from '../services/cityServices';
-import { createAttraction, deleteAttraction, getAttraction, updateAttraction } from '../services/attractionService';
 import Card from '../components/Card';
 import Button from '../components/addButton';
 import AttractionForm from '../Forms/AttractionForm';
 import './Styles/Modal.css';
 import './Styles/CityList.css';
-import { useNavigate } from 'react-router-dom';
 import Search from '../components/Search';
-import {useUser} from '../hooks/userContext';
-import CircularProgress from '@mui/material/CircularProgress'; 
+import { useUser } from '../hooks/userContext';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useSnackbar } from '../hooks/snackbarContext';
+import ConfirmationModal from '../components/ConfirmationModal'; // Import your ConfirmationModal
+
 const AttractionList = () => {
   const { cityId } = useParams();
   const [attractions, setAttractions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [formError, setformError] = useState(null);
+  const [formError, setFormError] = useState(null);
   const [formMode, setFormMode] = useState('add');
   const [selectedAttraction, setSelectedAttraction] = useState(null);
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user } = useUser();
+  const { showSnackbar } = useSnackbar();
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [attractionToDelete, setAttractionToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const {user} = useUser();
 
   useEffect(() => {
-    console.log(`Fetching attractions for city with ID: ${cityId}`);
     const fetchAttractions = async () => {
+      setLoading(true);
       try {
         const data = await getCityAttractions(cityId);
         setAttractions(data);
-
-        setIsAdmin(user?.isAdmin || false);
-
-        setLoading(false);
       } catch (err) {
+        showSnackbar('Error fetching attractions.', 'error');
+      } finally {
         setLoading(false);
       }
     };
 
     fetchAttractions();
-  }, [cityId,user]);
+  }, [cityId, showSnackbar]);
 
   const handleButtonClick = () => {
     setFormMode('add');
@@ -51,73 +53,79 @@ const AttractionList = () => {
   const handleClose = () => {
     setShowForm(false);
     setSelectedAttraction(null);
+    setFormError(null);
   };
 
-  const handleExploreClick = async (Id) => {
-    try {
-      navigate(`/cities/${cityId}/attractions/${Id}`);
-    } catch (error) {
-      console.error('Error navigating to attraction detail:', error);
-    }
+  const handleExploreClick = (Id) => {
+    navigate(`/cities/${cityId}/attractions/${Id}`);
   };
 
-  const handleRemoveClick = async (Id) => {
+  const handleRemoveClick = (Id) => {
+    setAttractionToDelete(Id);
+    setShowConfirmationModal(true);
+  };
+
+  const confirmDeleteAttraction = async () => {
     try {
-      await deleteAttraction(Id,user.token);
-      setAttractions(attractions.filter(attraction => attraction._id !== Id));
+      await deleteAttraction(attractionToDelete, user.token);
+      setAttractions(prev => prev.filter(attraction => attraction._id !== attractionToDelete));
+      showSnackbar('Attraction deleted successfully.', 'success');
     } catch (error) {
-      console.error('Error removing attraction:', error);
+      showSnackbar('Error removing attraction.', 'error');
+    } finally {
+      setShowConfirmationModal(false);
+      setAttractionToDelete(null);
     }
   };
 
   const handleUpdateClick = async (Id) => {
     try {
-      console.log(`Update clicked for attraction with ID: ${Id}`);
       const attractionData = await getAttraction(Id);
       setSelectedAttraction(attractionData);
-      console.log(attractionData);
       setFormMode('update');
       setShowForm(true);
     } catch (error) {
-      console.error('Error fetching attraction data:', error);
+      showSnackbar('Error fetching attraction data.', 'error');
     }
   };
 
   const handleFormSubmit = async (attractionData) => {
     try {
       if (formMode === 'add') {
-        const newAttraction = await createAttraction(attractionData,user.token);
-        console.log(newAttraction);
-        setAttractions([...attractions, newAttraction]);
+        const newAttraction = await createAttraction(attractionData, user.token);
+        setAttractions(prev => [...prev, newAttraction]);
+        showSnackbar('Attraction added successfully.', 'success');
       } else if (formMode === 'update') {
-        await updateAttraction(selectedAttraction._id, attractionData,user.token);
-        setAttractions(attractions.map(attraction =>
+        await updateAttraction(selectedAttraction._id, attractionData, user.token);
+        setAttractions(prev => prev.map(attraction => 
           attraction._id === selectedAttraction._id ? { ...attraction, ...attractionData } : attraction
         ));
+        showSnackbar('Attraction updated successfully.', 'success');
       }
       setShowForm(false);
       setSelectedAttraction(null);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setformError(error.response?.data?.message);
+      setFormError(error.response?.data?.message || 'Error submitting form.');
+      showSnackbar('Error submitting form.', 'error');
     }
   };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
-  const filteredAttraction = attractions.filter(attraction =>
+  const filteredAttractions = attractions.filter(attraction =>
     attraction.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <div className='loader'><CircularProgress /></div>;;
+  if (loading) return <div className='loader'><CircularProgress /></div>;
 
   return (
     <div className="list">
       <Search onSearch={handleSearch} />
       <div className="cards">
-        {filteredAttraction.length > 0 ? (
-          filteredAttraction.map((attraction) => (
+        {filteredAttractions.length > 0 ? (
+          filteredAttractions.map(attraction => (
             <Card
               key={attraction._id}
               title={attraction.name}
@@ -128,18 +136,18 @@ const AttractionList = () => {
               onExploreClick={handleExploreClick}
               onUpdateClick={handleUpdateClick}
               onRemoveClick={handleRemoveClick}
-              isAdmin={isAdmin}
+              isAdmin={user?.isAdmin}
             />
           ))
         ) : (
-          <div>No attraction found.</div>  
+          <div>No attractions found.</div>
         )}
       </div>
-      <div>
-        {isAdmin && (<Button onClick={handleButtonClick}>
+      {user?.isAdmin && (
+        <Button onClick={handleButtonClick}>
           {showForm ? 'Cancel' : 'Add Attraction'}
-        </Button>)}
-      </div>
+        </Button>
+      )}
       {showForm && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -157,6 +165,13 @@ const AttractionList = () => {
             </div>
           </div>
         </div>
+      )}
+      {showConfirmationModal && (
+        <ConfirmationModal
+          message="Are you sure you want to delete this attraction?"
+          onConfirm={confirmDeleteAttraction}
+          onCancel={() => setShowConfirmationModal(false)}
+        />
       )}
     </div>
   );

@@ -10,7 +10,7 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
   const [city, setCity] = useState('');
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState('');
-  const [imageUrls, setImageUrls] = useState(null);
+  const [imageUrls, setImageUrls] = useState([]);
   const [cities, setCities] = useState([]);
   const [formError, setFormError] = useState(null); // New state for error messages
 
@@ -25,11 +25,12 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
     };
   
     fetchCities();
+
     if (initialData) {
-      setName(initialData.name);
-      setDescription(initialData.description);
-      setLocation(initialData.location);
-      setCity(initialData.city);
+      setName(initialData.name || '');
+      setDescription(initialData.description || '');
+      setLocation(initialData.location || '');
+      setCity(initialData.city || '');
       setCategories(initialData.categories || []); 
       setImageUrls(initialData.images || []);
     }
@@ -140,7 +141,7 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
                   {city.name}
                 </option>
               ))}
-              {initialData.city && !cities.some(cityItem => cityItem._id === initialData.city) && (
+              {initialData?.city && !cities.some(cityItem => cityItem._id === initialData.city) && (
                 <option value={initialData.city} disabled>
                   {initialData.city} (Add this city)
                 </option>
@@ -174,13 +175,13 @@ const AttractionForm = ({ initialData, onSubmit, mode, error }) => {
               id="images"
               multiple
               onChange={handleImageUpload}
-              required={mode === 'add' && !imageUrls}
+              required={mode === 'add' && imageUrls.length === 0}
             />
-            {imageUrls && imageUrls.map((url, index) => (
+            {imageUrls.map((url, index) => (
               <img key={index} src={url} alt="Attraction" style={{ maxWidth: '200px', marginTop: '10px' }} />
             ))}
           </div>
-          <button type="submit" disabled={!imageUrls}>
+          <button type="submit" disabled={imageUrls.length === 0}>
             {mode === 'add' ? 'Add Attraction' : 'Update Attraction'}
           </button>
         </form>

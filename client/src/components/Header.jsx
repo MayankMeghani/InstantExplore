@@ -1,30 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Styles/Header.css';
 import { useUser } from '../hooks/userContext';
-import { logOut } from '../services/AuthenticationService';
-
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
-  const { user, updateUser } = useUser(); 
+  const { user, logout } = useUser(); 
+  const [isLoggedIn, setIsLoggedIn] = useState(!!user);
 
   useEffect(() => {
     setIsLoggedIn(!!user);
   }, [user]);
 
-  const handleLogout = useCallback(async () => {
-    try {
-      await logOut();  // Assuming logOut is an async function
-      updateUser();  // Update the user context
-      setIsLoggedIn(false);
-      navigate('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  }, [updateUser, navigate]);
+  const handleLogout =  () => {
+    setIsLoggedIn(false);
+    logout(); // Call the logout method from context
+    navigate('/'); // Navigate after logging out
+  };
 
   return (
     <header className={`header ${isHomePage ? 'home' : ''}`}>
@@ -43,41 +36,25 @@ const Header = () => {
         </Link>
 
         <Link to="/cities" className="nav-link">
-              Cities
+          Cities
         </Link>
 
         {!isLoggedIn ? (
           <>
-            <Link to="/login" className="nav-link">
-              Log-in
-            </Link>
-            <Link to="/signup" className="nav-link">
-              Sign-Up
-            </Link>
+            <Link to="/login" className="nav-link">Log-in</Link>
+            <Link to="/signup" className="nav-link">Sign-Up</Link>
           </>
         ) : (
           <>
-            {!user.isAdmin && (
+            {!user.isAdmin ? (
               <>
-              <Link to="/reviews" className="nav-link">
-                My Reviews
-              </Link>
-
-              <Link to="/requests" className="nav-link">
-              Suggestions
-            </Link>
-            </>
-            )}
-
-            {user.isAdmin && (
+                <Link to="/reviews" className="nav-link">My Reviews</Link>
+                <Link to="/requests" className="nav-link">Suggestions</Link>
+              </>
+            ) : (
               <>
-              <Link to="/requests" className="nav-link">
-                Requests
-              </Link>
-
-              <Link to="/panel" className="nav-link">
-                Admin Dashboard
-              </Link>
+                <Link to="/requests" className="nav-link">Requests</Link>
+                <Link to="/panel" className="nav-link">Admin Dashboard</Link>
               </>
             )}
             <button onClick={handleLogout} className="nav-link logout-button">
@@ -88,7 +65,6 @@ const Header = () => {
       </div>
     </header>
   );
-  
 };
 
 export default Header;
